@@ -1,5 +1,8 @@
 package org.adligo.i.adi;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.Properties;
 import java.util.Set;
 import java.util.Map;
 import java.util.HashMap;
@@ -24,10 +27,11 @@ import org.apache.commons.logging.LogFactory;
  *
  */
 public class Registry implements I_Registry {
+	public static final String IMPLEMTAION_CLASS = "org.adligo.i.adi.impl";
+	
 	private static final Log log = LogFactory.getLog(Registry.class);
 	private static I_Registry instance = null;
-	public static final String IMPLEMTAION_CLASS = "org.adligo.i.adsi.impl";
-	public static final String JNDI_IMPLEMTAION = "org.adligo.i.adsi.instance";
+	private static Object doubleFactoryBlock = new Object();
 	
 	/**
 	 * keep track of if we initalized or not
@@ -64,65 +68,116 @@ public class Registry implements I_Registry {
 	}
 	
 	public static I_Registry getInstance() {
-		if (log.isDebugEnabled()) {
-			log.debug("entering");
-		}
-		if (!init) {
-			synchronized (Registry.class) {
-				if (!init) {
-					if (log.isDebugEnabled()) {
-						log.debug("attempting init");
-					}
-					Exception e = null;
-					try {
-						InitialContext context = new InitialContext();
-						instance = (I_Registry) context.lookup(IMPLEMTAION_CLASS);
-					} catch (Exception x) {
-						log.error(x.getMessage(), x);
-						e = x;
-					}
-					
-					if (instance == null) {
-						try {
-							String clazzName = System.getProperty(IMPLEMTAION_CLASS);
-							if (clazzName != null) {
-								
-								if (log.isDebugEnabled()) {
-									log.debug("attempting instaniate " + clazzName);
-								}
-								Class clazz = Class.forName(clazzName);
-								if (log.isDebugEnabled()) {
-									log.debug("got clazz " + clazz);
-								}
-								instance = (I_Registry) clazz.newInstance();
-								if (log.isDebugEnabled()) {
-									log.debug("got instance " + instance);
-								}
-							}
-						} catch (Exception x) {
-							log.error(x.getMessage(), x);
-							e = x;
-						}
-					}
-					if (instance == null) {
-						//prevent multiple calls since,
-						// the system is basicly down at this point
-						RuntimeException ruin = null;
-						if (e != null) {
-							ruin = new RuntimeException(e);
-						} else {
-							ruin = new RuntimeException("Could not locate a implementation, try ... \n" +
-									" setting this up through jndi or System.setProperty(Registry.IMPLEMTAION_CLASS, \n " +
-									" \t\t\"org.adligo.examples.i.adsi.ExampleMethodRegistry\"); ");
-						}
-						
-						throw new RuntimeException(e);
-					}
-					init = true;
+		I_Registry toRet = instance;
+		if (toRet == null) {
+			synchronized (doubleFactoryBlock) {
+				if (toRet == null) {
+					instance = createInstance();
+					toRet = instance;
 				}
 			}
 		}
-		return instance;
+		return toRet;
+	}
+	private static synchronized I_Registry createInstance() {
+		if (log.isDebugEnabled()) {
+			log.debug("entering");
+		}
+		if (instance != null) {
+			return instance;
+		}
+		I_Registry toRet = null;
+		if (!init) {
+			if (log.isDebugEnabled()) {
+				log.debug("attempting init");
+			}
+			
+			Exception e = null;
+			try {
+				InitialContext context = new InitialContext();
+				toRet = (I_Registry) context.lookup(IMPLEMTAION_CLASS);
+			} catch (Exception x) {
+				log.error(x.getMessage(), x);
+				e = x;
+			}
+			
+			if (toRet == null) {
+				try {
+					String clazzName = System.getProperty(IMPLEMTAION_CLASS);
+					toRet = createRegistryFromClassName(toRet, clazzName);
+				} catch (Exception x) {
+					log.error(x.getMessage(), x);
+					e = x;
+				}
+			}
+			if (toRet == null) {
+				try {
+					String clazzName = getClassNameFromPropertyFile();
+					toRet = createRegistryFromClassName(toRet, clazzName);
+				} catch (Exception x) {
+					log.error(x.getMessage(), x);
+					e = x;
+				}
+			}
+			if (toRet == null) {
+				//prevent multiple calls since,
+				// the system is basicly down at this point
+				RuntimeException ruin = null;
+				if (e != null) {
+					ruin = new RuntimeException(e);
+				} else {
+					ruin = new RuntimeException("Could not locate a implementation, try ... \n" +
+							" setting this up through jndi or System.setProperty(Registry.IMPLEMTAION_CLASS, \n " +
+							" \t\t\"org.adligo.examples.i.adsi.ExampleMethodRegistry\"); ");
+				}
+				
+				throw new RuntimeException(e);
+			}
+			init = true;
+		}
+		return toRet;
+	}
+	
+	/**
+	 * read a properties file when jndi isn't available
+	 * @return
+	 * @throws Exception
+	 */
+	private static String getClassNameFromPropertyFile() throws Exception {
+		Properties props  = new Properties();
+		File file = new File("adi.properties");
+		FileInputStream in = new FileInputStream(file);
+		in.close();
+		return props.getProperty(IMPLEMTAION_CLASS);
+	}
+	
+	/**
+	 * Do a class.ForName and create a instance
+	 * @param toRet
+	 * @param clazzName
+	 * @return
+	 * @throws ClassNotFoundException
+	 * @throws InstantiationException
+	 * @throws IllegalAccessException
+	 */
+	private static I_Registry createRegistryFromClassName(I_Registry toRet,
+			String clazzName) throws ClassNotFoundException,
+			InstantiationException, IllegalAccessException {
+		if (clazzName != null) {
+			
+			if (log.isDebugEnabled()) {
+				log.debug("attempting instaniate " + clazzName);
+			}
+			Class clazz = Class.forName(clazzName);
+			if (log.isDebugEnabled()) {
+				log.debug("got clazz " + clazz);
+			}
+			toRet = (I_Registry) clazz.newInstance();
+			if (log.isDebugEnabled()) {
+				log.debug("got instance " + toRet);
+			}
+		}
+		return toRet;
 	}
 
 	/**
