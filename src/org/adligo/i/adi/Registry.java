@@ -96,23 +96,18 @@ public class Registry implements I_Registry {
 			try {
 				InitialContext context = new InitialContext();
 				toRet = (I_Registry) context.lookup(IMPLEMTAION_CLASS);
+				
 			} catch (Exception x) {
 				log.error(x.getMessage(), x);
 				e = x;
 			}
-			
-			if (toRet == null) {
-				try {
-					String clazzName = System.getProperty(IMPLEMTAION_CLASS);
-					toRet = createRegistryFromClassName(toRet, clazzName);
-				} catch (Exception x) {
-					log.error(x.getMessage(), x);
-					e = x;
-				}
+			if (log.isDebugEnabled()) {
+				log.debug("found " + toRet + " from jndi for name " +
+						IMPLEMTAION_CLASS);
 			}
 			if (toRet == null) {
 				try {
-					String clazzName = getClassNameFromPropertyFile();
+					String clazzName = System.getProperty(IMPLEMTAION_CLASS);
 					toRet = createRegistryFromClassName(toRet, clazzName);
 				} catch (Exception x) {
 					log.error(x.getMessage(), x);
