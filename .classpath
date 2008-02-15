@@ -6,5 +6,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/commons-logging"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/log4j"/>
 	<classpathentry kind="src" path="jndi_example"/>
-	<classpathentry kind="output" path="bin"/>
+	<classpathentry kind="src" path="jndi_example_fail"/>
+	<classpathentry kind="output" path="classes"/>
 </classpath>

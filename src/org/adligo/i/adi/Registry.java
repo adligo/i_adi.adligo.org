@@ -1,15 +1,10 @@
 package org.adligo.i.adi;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.util.Properties;
 import java.util.Set;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Collections;
-
-import javax.naming.InitialContext;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -61,13 +56,14 @@ public class Registry implements I_Registry {
 		
 	}
 	
+	/**
+	 * this will return the I_Registry instance
+	 * which may be setup using jndi or java system
+	 * peoperties see Registry Creator
+	 * @return
+	 */
 	public static I_Registry getInstance() {
-		I_Registry toRet = instance;
-		if (toRet == null) {
-			toRet = RegistryCreator.createInstance();
-			instance = toRet;
-		}
-		return toRet;
+		return RegistryCreator.instance;
 	}
 	
 	
