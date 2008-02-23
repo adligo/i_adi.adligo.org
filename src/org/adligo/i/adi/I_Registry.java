@@ -1,6 +1,6 @@
 package org.adligo.i.adi;
 
-import java.util.Set;
+import java.util.Vector;;
 
 /**
  * this is the begining of the org.adligo 2.0
@@ -89,17 +89,22 @@ public interface I_Registry {
 	 */
 	public boolean servedAllCheckedInvokers();
 	/**
-	 * returns a Set of names of the Invokers 
+	 * returns a Vector of names <Strings> of the Invokers 
 	 * that weren't found to make using the api easier
 	 * by providing a concise list of missing names 
+	 * 
+	 * Couldn't use Set <String> due to CLDC 2.0
 	 * @return
 	 */
-	public Set <String> getMissingInvokers();
+	public Vector getMissingInvokers();
 	/**
-	 * returns a Set of names of the CheckedInvokers 
+	 * returns a Vector of names <Strings> of the CheckedInvokers 
 	 * that weren't found to make using the api easier
 	 * by providing a concise list of missing names
+	 * 
+	 * Couldn't use Set <String> due to CLDC 2.0
 	 * @return
 	 */
-	public Set <String> getMissingCheckedInvokers();
+	public Vector getMissingCheckedInvokers();
+
 }

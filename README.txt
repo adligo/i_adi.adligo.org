@@ -15,4 +15,5 @@ Map
 Set
 
 This project is a attempt to come up with a more standard api for wrapping subsystems in a thread safe 
-stateless manor.
+stateless manor.  It is intended to be used in j2ME environments, servlet environments,
+GWT environments and swing environments.

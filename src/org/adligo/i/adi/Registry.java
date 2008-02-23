@@ -1,41 +1,58 @@
 package org.adligo.i.adi;
 
-import java.util.Set;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Collections;
+import java.util.Vector;
+import java.util.Hashtable;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.adligo.i.log.Log;
+import org.adligo.i.log.LogFactory;
+
 
 /**
- * this is a continer or Registry for 
+ * this is a container or Registry for 
  * providing wrappers to stateless apis of 
  * subsystems so
  * that your application can dynamicly configure 
  * its structure. 
  * 
+ * It is intended to be portable between CLDC (phones pdas exc),
+ * GWT (ajax), and full blown java apps (servlets and applets).
  * 
+ * The CLDC part makes us yank the newer collection (generic) code and go back
+ * to Vectors and Hashtables :(
  * 
  * @author scott
  *
  */
 public class Registry implements I_Registry {
 	public static final String IMPLEMTAION_CLASS = "org.adligo.i.adi.impl";
+	/**
+	 * obtained with the same logic as the Registry is obtained
+	 */
+	public static final String LOG_IMPLEMTAION_CLASS = "org.adligo.i.adi.log_impl";
 	
-	private static final Log log = LogFactory.getLog(Registry.class);
-	private static I_Registry instance = null;
+	private final Log log = LogFactory.getLog(Registry.class);
 	
 
-	
-	private Map <String,I_Invoker> methods = new HashMap();
-	private Map <String,I_CheckedInvoker> checkedMethods = new HashMap();
-	private boolean servedAllRequests = true;
-	private boolean servedAllInvokers = true;
-	private boolean servedAllCheckedInvokers = true;
-	private Set missingInvokers = Collections.synchronizedSet(new HashSet());
-	private Set missingCheckedInvokers = Collections.synchronizedSet(new HashSet());
+	/**
+	 * <String,I_Invoker> 
+	 * CLDC 2.0
+	 */
+	volatile private Hashtable methods = new Hashtable();
+	/*
+	 * <String,I_CheckedInvoker>
+	 */
+	volatile private Hashtable checkedMethods = new Hashtable();
+	volatile private boolean servedAllRequests = true;
+	volatile private boolean servedAllInvokers = true;
+	volatile private boolean servedAllCheckedInvokers = true;
+	/**
+	 * 
+	 */
+	volatile private Vector missingInvokers = new Vector();
+	/**
+	 * 
+	 */
+	volatile private Vector missingCheckedInvokers = new Vector();
 	
 	protected Registry() { 
 		populateInvokers(methods);
@@ -45,14 +62,14 @@ public class Registry implements I_Registry {
 	 * override this method
 	 * @param p
 	 */
-	protected void populateInvokers(Map <String,I_Invoker> p ) {
+	protected void populateInvokers(Hashtable p ) {
 		
 	}
 	/**
 	 * override this method
 	 * @param p
 	 */
-	protected void populateCheckedInvokers(Map <String,I_CheckedInvoker> p) {
+	protected void populateCheckedInvokers(Hashtable p) {
 		
 	}
 	
@@ -66,32 +83,20 @@ public class Registry implements I_Registry {
 		return RegistryCreator.instance;
 	}
 	
-	
-
-	/**
-	 * @todo implement this so that it can be looked up through
-	 * container configuration, so others can create there own impl
-	 * if they need to for some reason
-	 * 
-	 * @return
-	 */
-	private static I_Registry obtainFromContext() {
-		return null;
-	}
-
 
 	/**
 	 * @see I_Registry#getCheckedInvoker(String)
 	 */
 	public I_CheckedInvoker getCheckedInvoker(String p) {
-		I_CheckedInvoker toRet = checkedMethods.get(p);
+		
+		I_CheckedInvoker toRet = (I_CheckedInvoker) checkedMethods.get(p);
 		if (log.isDebugEnabled()) {
 			log.debug("obtained " + toRet + " for request " + p);
 		}
 		if (toRet == null) {
 			servedAllRequests = false;
 			servedAllCheckedInvokers = false;
-			missingCheckedInvokers.add(p);
+			missingCheckedInvokers.addElement(p);
 			throw new NullPointerException("Unable to loacte CheckedInvoker " + p);
 		}
 		return toRet;
@@ -102,14 +107,14 @@ public class Registry implements I_Registry {
 	 * @see I_Registry#getInvoker(String)
 	 */
 	public I_Invoker getInvoker(String p) {
-		I_Invoker toRet =  methods.get(p);
+		I_Invoker toRet = (I_Invoker) methods.get(p);
 		if (log.isDebugEnabled()) {
 			log.debug("obtained " + toRet + " for request " + p);
 		}
 		if (toRet == null) {
 			servedAllRequests = false;
 			servedAllInvokers = false;
-			missingInvokers.add(p);
+			missingInvokers.addElement(p);
 			throw new NullPointerException("Unable to loacte Invoker " + p);
 		}
 		return toRet;
@@ -124,10 +129,11 @@ public class Registry implements I_Registry {
 	public boolean servedAllCheckedInvokers() {
 		return servedAllCheckedInvokers;
 	}
-	public Set <String> getMissingInvokers() {
+	public Vector getMissingInvokers() {
 		return this.missingInvokers;
 	}
-	public Set <String> getMissingCheckedInvokers() {
+	public Vector getMissingCheckedInvokers() {
 		return this.missingCheckedInvokers;
 	}
+	
 }

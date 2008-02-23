@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="src" path="example"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/commons-logging"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/log4j"/>
-	<classpathentry kind="src" path="jndi_example"/>
-	<classpathentry kind="src" path="jndi_example_fail"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/commons-logging"/>
+	<classpathentry kind="con" path="J2MELIB"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/i_log"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
