@@ -7,6 +7,7 @@ import org.adligo.i.log.Log;
 import org.adligo.i.log.LogFactory;
 
 public class AdiProperties {
+	public static final String REGISTRY_LOOKUP = "registry_lookup";
 	public static final String REGISTRY_CLASS = "registry_class";
 	private static final Log log = LogFactory.getLog(AdiProperties.class);
 	
@@ -24,7 +25,23 @@ public class AdiProperties {
 	}
 
 	private AdiProperties(Hashtable p) {
-		
+		String lookupName = (String) p.get(REGISTRY_LOOKUP);
+		if (lookupName != null) {
+			if (log.isDebugEnabled()) {
+				log.debug("registry lookup is " + lookupName);
+			}
+			try {
+				Class clazz = Class.forName(lookupName);
+				I_RegistryLookup lookup = (I_RegistryLookup) clazz.newInstance();
+				reg = lookup.lookup();
+				if (log.isDebugEnabled()) {
+					log.debug("registry is a " + reg);
+				}
+				return;
+			} catch (Exception x) {
+				log.error(x.getMessage(), x);
+			}
+		}
 		String regClass = (String) p.get(REGISTRY_CLASS);
 		if (log.isDebugEnabled()) {
 			log.debug("registry class is " + regClass);
@@ -40,7 +57,6 @@ public class AdiProperties {
 		if (log.isDebugEnabled()) {
 			log.debug("registry is a " + reg);
 		}
-		
 	}
 	
 	public I_Registry getRegistry() {

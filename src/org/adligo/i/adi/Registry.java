@@ -25,10 +25,6 @@ import org.adligo.i.log.LogFactory;
  */
 public class Registry implements I_Registry {
 	public static final String IMPLEMTAION_CLASS = "org.adligo.i.adi.impl";
-	/**
-	 * obtained with the same logic as the Registry is obtained
-	 */
-	public static final String LOG_IMPLEMTAION_CLASS = "org.adligo.i.adi.log_impl";
 	
 	private final Log log = LogFactory.getLog(Registry.class);
 	

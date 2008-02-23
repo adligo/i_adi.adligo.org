@@ -35,33 +35,14 @@ public class RegistryCreator {
 						Registry.IMPLEMTAION_CLASS);
 			}
 		}
-		
-		if (toRet == null) {
-			try {
-				// j2ME doesn't have javax naming packages 
-				if (null == System.getProperty("microedition.configuration")) {
-					/*
-					javax.naming.InitialContext context = new javax.naming.InitialContext();
-					toRet = (I_Registry) context.lookup(
-							Registry.IMPLEMTAION_CLASS);
-							*/
-							
-				}
-			} catch (Exception x) {
-				log.error(x.getMessage(), x);
-				e = x;
-			}
-			if (log.isDebugEnabled()) {
-				log.debug("found " + toRet + " from jndi for name " +
-						Registry.IMPLEMTAION_CLASS);
-			}
-		}
+		// j2ME doesn't have javax naming packages 
 		
 		if (toRet == null) {
 			throw new RuntimeException("Could not locate a implementation, try ... \n" +
-						" setting this up through jndi or System.setProperty(Registry.IMPLEMTAION_CLASS, \n " +
+						" setting this up through System.setProperty(Registry.IMPLEMTAION_CLASS, \n " +
 						" \t\t\"org.adligo.examples.i.adsi.ExampleMethodRegistry\"); \n" +
-						"or through the adi.properties file registry_class=someClass");
+						"or through the adi.properties file registry_class=someClass, " +
+						"or through a custom lookup (jndi?)");
 		}
 		return toRet;
 	}
