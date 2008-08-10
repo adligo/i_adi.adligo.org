@@ -1,6 +1,6 @@
 package org.adligo.i.adi.client;
 
-import java.util.Vector;;
+import org.adligo.i.util.client.I_Collection;
 
 /**
  * this is the begining of the org.adligo 2.0
@@ -96,7 +96,7 @@ public interface I_Registry {
 	 * Couldn't use Set <String> due to CLDC 2.0
 	 * @return
 	 */
-	public Vector getMissingInvokers();
+	public I_Collection getMissingInvokers();
 	/**
 	 * returns a Vector of names <Strings> of the CheckedInvokers 
 	 * that weren't found to make using the api easier
@@ -105,6 +105,6 @@ public interface I_Registry {
 	 * Couldn't use Set <String> due to CLDC 2.0
 	 * @return
 	 */
-	public Vector getMissingCheckedInvokers();
+	public I_Collection getMissingCheckedInvokers();
 
 }

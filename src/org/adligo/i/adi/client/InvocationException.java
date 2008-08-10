@@ -11,7 +11,6 @@ package org.adligo.i.adi.client;
  * @author scott
  *
  */
-import java.lang.Throwable;
 
 public class InvocationException extends Exception {
 

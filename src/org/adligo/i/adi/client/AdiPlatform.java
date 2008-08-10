@@ -11,13 +11,11 @@ import org.adligo.i.util.client.PropertyFactory;
 public class AdiPlatform {
 	private static I_Registry reg = null;
 	
-	public
-	static final void init() {
-		
-	}
-	
-	public static final void init(I_Registry p) {
+	public static synchronized  final void init(I_Registry p) {
 		reg = p;
+		if (reg == null) {
+			throw new NullPointerException("The registry can't be null!");
+		}
 	}
 	
 	public static I_Registry getRegistry() {
