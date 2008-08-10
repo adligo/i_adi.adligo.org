@@ -1,4 +1,4 @@
-package org.adligo.i.adi;
+package org.adligo.i.adi.client;
 
 import java.util.Vector;;
 

@@ -1,10 +1,10 @@
-package org.adligo.i.adi;
+package org.adligo.i.adi.client;
 
 import java.util.Vector;
 import java.util.Hashtable;
 
-import org.adligo.i.log.Log;
-import org.adligo.i.log.LogFactory;
+import org.adligo.i.log.client.Log;
+import org.adligo.i.log.client.LogFactory;
 
 
 /**
@@ -76,7 +76,7 @@ public class Registry implements I_Registry {
 	 * @return
 	 */
 	public static I_Registry getInstance() {
-		return RegistryCreator.instance;
+		return AdiPlatform.getRegistry();
 	}
 	
 

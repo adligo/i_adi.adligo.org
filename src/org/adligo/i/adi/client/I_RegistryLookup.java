@@ -1,4 +1,4 @@
-package org.adligo.i.adi;
+package org.adligo.i.adi.client;
 
 /**
  * JNDI isn't avaliable in CLDC so this is a way to wrap a plugin

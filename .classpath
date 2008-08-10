@@ -3,6 +3,7 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="res"/>
 	<classpathentry kind="con" path="J2MELIB"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/i_log"/>
+	<classpathentry kind="lib" path="C:/cygwin/home/scott/org_src/dist/j2me/j2me_main_v1_1/i_log_v1_5_3.jar"/>
+	<classpathentry kind="lib" path="C:/cygwin/home/scott/org_src/dist/j2me/j2me_main_v1_1/i_util_v1_1_2.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
