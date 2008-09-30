@@ -132,4 +132,7 @@ public class Registry implements I_Registry {
 		return this.missingCheckedInvokers;
 	}
 	
+	protected void changed() {
+		AdiPlatform.changed(this);
+	}
 }
