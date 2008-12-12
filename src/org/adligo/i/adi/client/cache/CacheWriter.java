@@ -1,0 +1,13 @@
+package org.adligo.i.adi.client.cache;
+
+import org.adligo.i.adi.client.I_Invoker;
+
+public class CacheWriter implements I_Invoker {
+
+	public Object invoke(Object valueObject) {
+		CacheEditToken token = (CacheEditToken) valueObject;
+		Cache.items.put(token.getName(), token.getValue());
+		return Boolean.TRUE;
+	}
+
+}
