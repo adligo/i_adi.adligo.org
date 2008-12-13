@@ -5,6 +5,9 @@ import org.adligo.i.util.client.I_Collection;
 import org.adligo.i.util.client.I_Map;
 import org.adligo.i.util.client.MapFactory;
 
+import org.adligo.i.adi.client.cache.Cache;
+import org.adligo.i.adi.client.cache.CacheReader;
+import org.adligo.i.adi.client.cache.CacheWriter;
 import org.adligo.i.log.client.Log;
 import org.adligo.i.log.client.LogFactory;
 
@@ -59,7 +62,8 @@ public class Registry implements I_Registry {
 	 * @param p
 	 */
 	protected void populateInvokers(I_Map p ) {
-		
+		p.put(Cache.CACHE_READER, new CacheReader());
+		p.put(Cache.CACHE_WRITER, new CacheWriter());
 	}
 	/**
 	 * override this method
