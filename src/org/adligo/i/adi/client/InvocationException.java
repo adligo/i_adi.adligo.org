@@ -13,5 +13,10 @@ package org.adligo.i.adi.client;
  */
 
 public class InvocationException extends Exception {
-
+	
+	public InvocationException() {}
+	
+	public InvocationException(String p) {
+		super(p);
+	}
 }
