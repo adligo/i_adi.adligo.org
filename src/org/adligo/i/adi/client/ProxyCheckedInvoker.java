@@ -1,0 +1,40 @@
+package org.adligo.i.adi.client;
+
+import org.adligo.i.log.client.Log;
+import org.adligo.i.log.client.LogFactory;
+
+public class ProxyCheckedInvoker implements I_CheckedInvoker {
+	private static final Log log = LogFactory.getLog(ProxyCheckedInvoker.class);
+	private String name;
+	private I_CheckedInvoker delegate;
+
+	public ProxyCheckedInvoker(String name) {
+		if (name == null) {
+			Exception e = new NullPointerException();
+			e.fillInStackTrace();
+			log.error("Null ProxyInvoker Name!", e);
+		}
+		this.name = name;
+	}
+	
+	protected String getName() {
+		return name;
+	}
+	
+	public synchronized void setDelegate(I_CheckedInvoker p) {
+		delegate = p;
+	}
+	public I_CheckedInvoker getDelegate() {
+		return delegate;
+	}
+	
+	public Object invoke(Object valueObject) throws InvocationException {
+		if (delegate == null) {
+			InvocationException e = new InvocationException("Proxy isn't initalized yet!");
+			e.fillInStackTrace();
+			throw e;
+		} else {
+			return delegate.invoke(valueObject);
+		}
+	}
+}

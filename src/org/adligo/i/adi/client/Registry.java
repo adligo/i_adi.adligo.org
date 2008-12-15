@@ -1,7 +1,9 @@
 package org.adligo.i.adi.client;
 
+import org.adligo.i.util.client.ArrayCollection;
 import org.adligo.i.util.client.CollectionFactory;
 import org.adligo.i.util.client.I_Collection;
+import org.adligo.i.util.client.I_Iterator;
 import org.adligo.i.util.client.I_Map;
 import org.adligo.i.util.client.MapFactory;
 
@@ -13,45 +15,59 @@ import org.adligo.i.log.client.LogFactory;
 
 
 /**
- * this is a container or Registry for 
- * providing wrappers to stateless apis of 
- * subsystems so
- * that your application can dynamicly configure 
- * its structure. 
+ * this is the begining of the org.adligo 2.0
+ * it is intended as
+ * a end all be all wrapper for 
+ * stateless threadsafe code
  * 
- * It is intended to be portable between CLDC (phones pdas exc),
- * GWT (ajax), and full blown java apps (servlets and applets).
+ * mostly this is storage code (could be Hibernate, Jdbc DAOs,
+ * SearchEngine stuff (Lucene), FileSystem stuff , 
+ * stuff cached in RAM from some of the previous sources exc..)
+ * Of course one of the goals is to be able to swap things so
+ * if you wrote Jdbc and then decide you like Hibernate for 
+ * something you can swap it.  Or if you wrote something in Hibernate
+ * and then decide it needs to move to a Ldap server, and then 
+ * change your mind again and decide it needs to stay in RAM.
+ *
+ * This idea sort of evolved from the 
+ * i_persistence interfaces which were a inital attempt at doing 
+ * this sort of thing.  However they got somewhat verbose and were to
+ * specific to databases.
  * 
- * The CLDC part makes us yank the newer collection (generic) code and go back
- * to Vectors and Hashtables :(
+ * This set of interfaces are much more adaptable,
+ * for instance if you have a I_Invoker
+ * for "getPersons"  you may start with 
+ * accepting I_TemplateParams to provide the user
+ * with a large taximony landsacpe for all sorts of 
+ * extendable advanced search screens.
+ * 
+ * Later on you may think, hey what about 
+ * per compiling my queries and doing a lookup of single
+ * object on the primary key.  So with this api
+ * you can use Polymorphism
+ * to pass in a Integer for the precompiled query 
+ * or a I_TemplateParams object for a TreeFinder style
+ * Query.  exc....
  * 
  * @author scott
  *
  */
-public class Registry implements I_Registry {
-	private final Log log = LogFactory.getLog(Registry.class);
+public final class Registry  {
+	private static final Log log = LogFactory.getLog(Registry.class);
 	
 
 	/**
 	 * <String,I_Invoker> 
 	 * CLDC 2.0
 	 */
-	volatile private I_Map methods = MapFactory.create();
+	private static I_Map methods;
 	/*
 	 * <String,I_CheckedInvoker>
 	 */
-	volatile private I_Map checkedMethods = MapFactory.create();
-	volatile private boolean servedAllRequests = true;
-	volatile private boolean servedAllInvokers = true;
-	volatile private boolean servedAllCheckedInvokers = true;
-	/**
-	 * 
-	 */
-	volatile private I_Collection missingInvokers = CollectionFactory.create();
-	/**
-	 * 
-	 */
-	volatile private I_Collection missingCheckedInvokers = CollectionFactory.create();
+	private static I_Map checkedMethods;
+	private static I_Collection preInitProxyMethods = new ArrayCollection();
+	private static I_Collection preInitProxyCheckedMethods = new ArrayCollection();
+	
 	
 	protected Registry() { 
 		populateInvokers(methods);
@@ -73,70 +89,109 @@ public class Registry implements I_Registry {
 		
 	}
 	
-	/**
-	 * this will return the I_Registry instance
-	 * which may be setup using jndi or java system
-	 * peoperties see Registry Creator
-	 * @return
-	 */
-	public static I_Registry getInstance() {
-		return AdiPlatform.getRegistry();
-	}
-	
 
 	/**
-	 * @see I_Registry#getCheckedInvoker(String)
+	 * dynamic locator method to discover your implementations
+	 * at run time
+	 * 
+	 * @param name 
+	 * Each usage of this sort of lookup 
+	 * will very, and a naming convention should be established
+	 * but generally the goal is to keep things simple
+	 * so in the adligo code names will look like
+	 * 
+	 * getPersons
+	 * savePersons
+	 * findSocks
+	 * openJar 
+	 * exc...
+	 * 
+	 * @return
 	 */
-	public I_CheckedInvoker getCheckedInvoker(String p) {
+	public static synchronized I_CheckedInvoker getCheckedInvoker(String p) {
 		
-		I_CheckedInvoker toRet = (I_CheckedInvoker) checkedMethods.get(p);
-		if (log.isDebugEnabled()) {
-			log.debug("obtained " + toRet + " for request " + p);
-		}
-		if (toRet == null) {
-			servedAllRequests = false;
-			servedAllCheckedInvokers = false;
-			missingCheckedInvokers.add(p);
-			throw new NullPointerException("Unable to loacte CheckedInvoker " + p);
+		I_CheckedInvoker toRet = null;
+		if (checkedMethods == null) {
+			toRet = new ProxyCheckedInvoker(p);
+		} else {
+			toRet = (I_CheckedInvoker) checkedMethods.get(p);
+			if (log.isDebugEnabled()) {
+				log.debug("obtained " + toRet + " for request " + p);
+			}
 		}
 		return toRet;
 	}
 
 
 	/**
-	 * @see I_Registry#getInvoker(String)
+	 * @see getCheckedInvoker method same idea
 	 */
-	public I_Invoker getInvoker(String p) {
+	public static synchronized I_Invoker getInvoker(String p) {
 		I_Invoker toRet = (I_Invoker) methods.get(p);
 		if (log.isDebugEnabled()) {
 			log.debug("obtained " + toRet + " for request " + p);
 		}
-		if (toRet == null) {
-			servedAllRequests = false;
-			servedAllInvokers = false;
-			missingInvokers.add(p);
-			throw new NullPointerException("Unable to loacte Invoker " + p);
-		}
 		return toRet;
 	}
-
-	public boolean servedAll() {
-		return servedAllRequests;
-	}
-	public boolean servedAllInvokers() {
-		return servedAllInvokers;
-	}
-	public boolean servedAllCheckedInvokers() {
-		return servedAllCheckedInvokers;
-	}
-	public I_Collection getMissingInvokers() {
-		return this.missingInvokers;
-	}
-	public I_Collection getMissingCheckedInvokers() {
-		return this.missingCheckedInvokers;
-	}
 	
-	protected void changed() {
-		AdiPlatform.changed(this);
+	/**
+	 * new api for initalization
+	 * wouln't replace only sets the first time
+	 */
+	public synchronized void addInvokerDelegates(I_Map p ) {
+		
+		if (methods == null) {
+			methods = MapFactory.create();
+			
+			I_Iterator it = preInitProxyMethods.getIterator();
+			while (it.hasNext()) {
+				ProxyInvoker pi = (ProxyInvoker) it.next();
+				methods.put(pi.getName(), pi);
+				pi.setDelegate((I_Invoker) p.get(pi.getName()));
+			}
+			 
+			preInitProxyMethods.clear();
+		} else {
+			I_Iterator it = p.getIterator();
+			while (it.hasNext()) {
+				String key = (String) it.next();
+				ProxyInvoker pi = (ProxyInvoker) methods.get(key);
+				if (pi != null) {
+					if (pi.getDelegate() == null) {
+						I_Invoker invoker = (I_Invoker) p.get(key);
+						pi.setDelegate(invoker);
+					}
+				}
+			}
+		}
+	}
+	/**
+	 * new api for initalization
+	 */
+	public synchronized void addCheckedInvokerDelegates(I_Map p) {
+		if (checkedMethods== null) {
+			checkedMethods = MapFactory.create();
+			
+			I_Iterator it = preInitProxyCheckedMethods.getIterator();
+			while (it.hasNext()) {
+				ProxyInvoker pi = (ProxyInvoker) it.next();
+				checkedMethods.put(pi.getName(), pi);
+				pi.setDelegate((I_Invoker) p.get(pi.getName()));
+			}
+			 
+			preInitProxyCheckedMethods.clear();
+		} else {
+			I_Iterator it = p.getIterator();
+			while (it.hasNext()) {
+				String key = (String) it.next();
+				ProxyInvoker pi = (ProxyInvoker) checkedMethods.get(key);
+				if (pi != null) {
+					if (pi.getDelegate() == null) {
+						I_Invoker invoker = (I_Invoker) p.get(key);
+						pi.setDelegate(invoker);
+					}
+				}
+			}
+		}
 	}
 }
