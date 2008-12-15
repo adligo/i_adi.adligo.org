@@ -17,6 +17,11 @@ public class ProxyInvoker implements I_Invoker {
 		this.name = name;
 	}
 	
+	public ProxyInvoker(String name, I_Invoker p) {
+		this(name);
+		delegate = p;
+	}
+	
 	protected String getName() {
 		return name;
 	}
@@ -40,4 +45,14 @@ public class ProxyInvoker implements I_Invoker {
 		}
 	}
 
+	public String toString() {
+		StringBuffer sb = new StringBuffer();
+		sb.append("ProxyInvoker [name=");
+		sb.append(name);
+		sb.append(",delegate=");
+		sb.append(delegate);
+		sb.append("]");
+		return sb.toString();
+		
+	}
 }

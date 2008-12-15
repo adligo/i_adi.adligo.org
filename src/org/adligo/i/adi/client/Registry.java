@@ -70,23 +70,8 @@ public final class Registry  {
 	
 	
 	protected Registry() { 
-		populateInvokers(methods);
-		populateCheckedInvokers(checkedMethods);
-	}
-	/**
-	 * override this method
-	 * @param p
-	 */
-	protected void populateInvokers(I_Map p ) {
-		p.put(Cache.CACHE_READER, new CacheReader());
-		p.put(Cache.CACHE_WRITER, new CacheWriter());
-	}
-	/**
-	 * override this method
-	 * @param p
-	 */
-	protected void populateCheckedInvokers(I_Map p) {
-		
+		preInitProxyMethods.add(new ProxyInvoker(Cache.CACHE_READER, new CacheReader()));
+		preInitProxyMethods.add(new ProxyInvoker(Cache.CACHE_WRITER, new CacheWriter()));
 	}
 	
 
@@ -113,11 +98,12 @@ public final class Registry  {
 		I_CheckedInvoker toRet = null;
 		if (checkedMethods == null) {
 			toRet = new ProxyCheckedInvoker(p);
+			preInitProxyCheckedMethods.add(toRet);
 		} else {
 			toRet = (I_CheckedInvoker) checkedMethods.get(p);
-			if (log.isDebugEnabled()) {
-				log.debug("obtained " + toRet + " for request " + p);
-			}
+		}
+		if (log.isDebugEnabled()) {
+			log.debug("Returning " + toRet + " for key " + p);
 		}
 		return toRet;
 	}
@@ -127,9 +113,15 @@ public final class Registry  {
 	 * @see getCheckedInvoker method same idea
 	 */
 	public static synchronized I_Invoker getInvoker(String p) {
-		I_Invoker toRet = (I_Invoker) methods.get(p);
+		I_Invoker toRet = null;
+		if (methods == null) {
+			toRet = new ProxyInvoker(p);
+			preInitProxyMethods.add(toRet);
+		} else {
+			toRet = (I_Invoker) methods.get(p);
+		}
 		if (log.isDebugEnabled()) {
-			log.debug("obtained " + toRet + " for request " + p);
+			log.debug("Returning " + toRet + " for key " + p);
 		}
 		return toRet;
 	}
@@ -138,19 +130,42 @@ public final class Registry  {
 	 * new api for initalization
 	 * wouln't replace only sets the first time
 	 */
-	public synchronized void addInvokerDelegates(I_Map p ) {
+	public static synchronized void addInvokerDelegates(I_Map p ) {
 		
 		if (methods == null) {
 			methods = MapFactory.create();
-			
-			I_Iterator it = preInitProxyMethods.getIterator();
-			while (it.hasNext()) {
-				ProxyInvoker pi = (ProxyInvoker) it.next();
-				methods.put(pi.getName(), pi);
-				pi.setDelegate((I_Invoker) p.get(pi.getName()));
+			if (preInitProxyMethods.size() == 0) {
+				I_Iterator it = p.getIterator();
+				while (it.hasNext()) {
+					String key = (String) it.next();
+					I_Invoker pi = (I_Invoker) methods.get(key);
+					if (pi == null) {
+						I_Invoker invoker = (I_Invoker) p.get(key);
+						if (log.isInfoEnabled()) {
+							log.info("putting invoker " + key + " obj " + invoker);
+						}
+						methods.put(key, invoker);
+					}
+				}
+			} else {
+				if (log.isDebugEnabled()) {
+					log.debug("creating methods object preInitProxyMethods has " + 
+							preInitProxyMethods.size());
+				}
+				
+				
+				I_Iterator it = preInitProxyMethods.getIterator();
+				while (it.hasNext()) {
+					ProxyInvoker pi = (ProxyInvoker) it.next();
+					methods.put(pi.getName(), pi);
+					pi.setDelegate((I_Invoker) p.get(pi.getName()));
+					if (log.isInfoEnabled()) {
+						log.info("put ProxyInvoker " + pi);
+					}
+				}
+				
+				preInitProxyMethods.clear();
 			}
-			 
-			preInitProxyMethods.clear();
 		} else {
 			I_Iterator it = p.getIterator();
 			while (it.hasNext()) {
@@ -168,26 +183,49 @@ public final class Registry  {
 	/**
 	 * new api for initalization
 	 */
-	public synchronized void addCheckedInvokerDelegates(I_Map p) {
-		if (checkedMethods== null) {
+	public static synchronized void addCheckedInvokerDelegates(I_Map p) {
+		if (checkedMethods == null) {
 			checkedMethods = MapFactory.create();
-			
-			I_Iterator it = preInitProxyCheckedMethods.getIterator();
-			while (it.hasNext()) {
-				ProxyInvoker pi = (ProxyInvoker) it.next();
-				checkedMethods.put(pi.getName(), pi);
-				pi.setDelegate((I_Invoker) p.get(pi.getName()));
+			if (preInitProxyCheckedMethods.size() == 0) {
+				I_Iterator it = p.getIterator();
+				while (it.hasNext()) {
+					String key = (String) it.next();
+					I_CheckedInvoker pi = (I_CheckedInvoker) checkedMethods.get(key);
+					if (pi == null) {
+						I_CheckedInvoker invoker = (I_CheckedInvoker) p.get(key);
+						if (log.isInfoEnabled()) {
+							log.info("putting checked invoker " + key + " obj " + invoker);
+						}
+						checkedMethods.put(key, invoker);
+					}
+				}
+			} else {
+				if (log.isDebugEnabled()) {
+					log.debug("creating checkedMethods object preInitProxycheckedMethods has " + 
+							preInitProxyCheckedMethods.size());
+				}
+				
+				
+				I_Iterator it = preInitProxyCheckedMethods.getIterator();
+				while (it.hasNext()) {
+					ProxyCheckedInvoker pi = (ProxyCheckedInvoker) it.next();
+					checkedMethods.put(pi.getName(), pi);
+					pi.setDelegate((I_CheckedInvoker) p.get(pi.getName()));
+					if (log.isInfoEnabled()) {
+						log.info("put ProxyCheckedInvoker " + pi);
+					}
+				}
+				
+				preInitProxyCheckedMethods.clear();
 			}
-			 
-			preInitProxyCheckedMethods.clear();
 		} else {
 			I_Iterator it = p.getIterator();
 			while (it.hasNext()) {
 				String key = (String) it.next();
-				ProxyInvoker pi = (ProxyInvoker) checkedMethods.get(key);
+				ProxyCheckedInvoker pi = (ProxyCheckedInvoker) checkedMethods.get(key);
 				if (pi != null) {
 					if (pi.getDelegate() == null) {
-						I_Invoker invoker = (I_Invoker) p.get(key);
+						I_CheckedInvoker invoker = (I_CheckedInvoker) p.get(key);
 						pi.setDelegate(invoker);
 					}
 				}

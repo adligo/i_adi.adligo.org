@@ -17,6 +17,11 @@ public class ProxyCheckedInvoker implements I_CheckedInvoker {
 		this.name = name;
 	}
 	
+	public ProxyCheckedInvoker(String name, I_CheckedInvoker p ) {
+		this(name);
+		delegate = p;
+	}
+	
 	protected String getName() {
 		return name;
 	}
@@ -36,5 +41,16 @@ public class ProxyCheckedInvoker implements I_CheckedInvoker {
 		} else {
 			return delegate.invoke(valueObject);
 		}
+	}
+	
+	public String toString() {
+		StringBuffer sb = new StringBuffer();
+		sb.append("ProxyInvoker [name=");
+		sb.append(name);
+		sb.append(",delegate=");
+		sb.append(delegate);
+		sb.append("]");
+		return sb.toString();
+		
 	}
 }
