@@ -54,7 +54,7 @@ import org.adligo.i.log.client.LogFactory;
  */
 public final class Registry  {
 	private static final Log log = LogFactory.getLog(Registry.class);
-	protected static final boolean loging = true;
+	protected static final boolean loging = false;
 
 	/**
 	 * <String,I_Invoker> 
