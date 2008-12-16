@@ -54,7 +54,7 @@ import org.adligo.i.log.client.LogFactory;
  */
 public final class Registry  {
 	private static final Log log = LogFactory.getLog(Registry.class);
-	
+	protected static final boolean loging = true;
 
 	/**
 	 * <String,I_Invoker> 
@@ -102,8 +102,9 @@ public final class Registry  {
 		} else {
 			toRet = (I_CheckedInvoker) checkedMethods.get(p);
 		}
+		// not sure why this log message doesn't work???
 		if (log.isDebugEnabled()) {
-			log.debug("Returning " + toRet + " for key " + p);
+			log.debug("Returning " + toRet + " for checked key " + p);
 		}
 		return toRet;
 	}
@@ -120,8 +121,12 @@ public final class Registry  {
 		} else {
 			toRet = (I_Invoker) methods.get(p);
 		}
+		// not sure why this log message doesn't work from GWT???
 		if (log.isDebugEnabled()) {
 			log.debug("Returning " + toRet + " for key " + p);
+		}
+		if (Registry.loging) {
+			System.out.println("Returning " + toRet + " for key " + p);
 		}
 		return toRet;
 	}
@@ -131,7 +136,13 @@ public final class Registry  {
 	 * wouln't replace only sets the first time
 	 */
 	public static synchronized void addInvokerDelegates(I_Map p ) {
-		
+		// not sure why this log message doesn't work???
+		if (log.isDebugEnabled()) {
+			log.debug("entering addInvokerDelegates...");
+		}
+		if (Registry.loging) {
+			System.out.println("entering addInvokerDelegates...");
+		}
 		if (methods == null) {
 			methods = MapFactory.create();
 			if (preInitProxyMethods.size() == 0) {
@@ -158,26 +169,36 @@ public final class Registry  {
 				while (it.hasNext()) {
 					ProxyInvoker pi = (ProxyInvoker) it.next();
 					methods.put(pi.getName(), pi);
-					pi.setDelegate((I_Invoker) p.get(pi.getName()));
+					I_Invoker del = (I_Invoker) p.get(pi.getName()); 
+					pi.setDelegate(del);
 					if (log.isInfoEnabled()) {
-						log.info("put ProxyInvoker " + pi);
+						log.info("put " + del  + " in " + pi);
 					}
 				}
 				
 				preInitProxyMethods.clear();
 			}
-		} else {
-			I_Iterator it = p.getIterator();
-			while (it.hasNext()) {
-				String key = (String) it.next();
-				ProxyInvoker pi = (ProxyInvoker) methods.get(key);
-				if (pi != null) {
-					if (pi.getDelegate() == null) {
-						I_Invoker invoker = (I_Invoker) p.get(key);
-						pi.setDelegate(invoker);
-					}
+		} 
+		
+		I_Iterator it = p.getIterator();
+		while (it.hasNext()) {
+			String key = (String) it.next();
+			ProxyInvoker pi = (ProxyInvoker) methods.get(key);
+			I_Invoker invoker = (I_Invoker) p.get(key);
+			if (pi != null) {
+				if (pi.getDelegate() == null) {
+					pi.setDelegate(invoker);
 				}
+			} else {
+				methods.put(key, invoker);
 			}
+		}
+		// not sure why this log message isn't working?
+		if (log.isDebugEnabled()) {
+			log.debug("exiting addInvokerDelegates...");
+		}
+		if (Registry.loging) {
+			System.out.println("exiting addInvokerDelegates...");
 		}
 	}
 	/**
@@ -218,17 +239,19 @@ public final class Registry  {
 				
 				preInitProxyCheckedMethods.clear();
 			}
-		} else {
-			I_Iterator it = p.getIterator();
-			while (it.hasNext()) {
-				String key = (String) it.next();
-				ProxyCheckedInvoker pi = (ProxyCheckedInvoker) checkedMethods.get(key);
-				if (pi != null) {
-					if (pi.getDelegate() == null) {
-						I_CheckedInvoker invoker = (I_CheckedInvoker) p.get(key);
-						pi.setDelegate(invoker);
-					}
+		} 
+		
+		I_Iterator it = p.getIterator();
+		while (it.hasNext()) {
+			String key = (String) it.next();
+			ProxyCheckedInvoker pi = (ProxyCheckedInvoker) checkedMethods.get(key);
+			I_CheckedInvoker invoker = (I_CheckedInvoker) p.get(key);
+			if (pi != null) {
+				if (pi.getDelegate() == null) {
+					pi.setDelegate(invoker);
 				}
+			} else {
+				checkedMethods.put(key, invoker);
 			}
 		}
 	}
