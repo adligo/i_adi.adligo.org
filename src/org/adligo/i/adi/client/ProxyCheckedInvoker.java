@@ -11,7 +11,6 @@ public class ProxyCheckedInvoker implements I_CheckedInvoker {
 	public ProxyCheckedInvoker(String name) {
 		if (name == null) {
 			Exception e = new NullPointerException();
-			e.fillInStackTrace();
 			log.error("Null ProxyInvoker Name!", e);
 		}
 		this.name = name;
@@ -36,7 +35,6 @@ public class ProxyCheckedInvoker implements I_CheckedInvoker {
 	public Object invoke(Object valueObject) throws InvocationException {
 		if (delegate == null) {
 			InvocationException e = new InvocationException("Proxy isn't initalized yet!");
-			e.fillInStackTrace();
 			throw e;
 		} else {
 			return delegate.invoke(valueObject);

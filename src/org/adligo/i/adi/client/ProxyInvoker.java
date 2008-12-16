@@ -11,7 +11,6 @@ public class ProxyInvoker implements I_Invoker {
 	public ProxyInvoker(String name) {
 		if (name == null) {
 			Exception e = new NullPointerException();
-			e.fillInStackTrace();
 			log.error("Null ProxyInvoker Name!", e);
 		}
 		this.name = name;
@@ -37,7 +36,6 @@ public class ProxyInvoker implements I_Invoker {
 	public Object invoke(Object valueObject) {
 		if (delegate == null) {
 			Exception e = new Exception();
-			e.fillInStackTrace();
 			log.error("Proxy isn't initalized yet!", e);
 			return null;
 		} else {
