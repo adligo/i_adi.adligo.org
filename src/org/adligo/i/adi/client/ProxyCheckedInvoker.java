@@ -26,6 +26,9 @@ public class ProxyCheckedInvoker implements I_CheckedInvoker {
 	}
 	
 	public synchronized void setDelegate(I_CheckedInvoker p) {
+		if (log.isDebugEnabled()) {
+			log.debug("getting invoker " + p + " for ProxyInvoker " + name);
+		}
 		delegate = p;
 	}
 	public I_CheckedInvoker getDelegate() {

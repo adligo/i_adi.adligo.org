@@ -26,6 +26,9 @@ public class ProxyInvoker implements I_Invoker {
 	}
 	
 	public synchronized void setDelegate(I_Invoker p) {
+		if (log.isDebugEnabled()) {
+			log.debug("getting invoker " + p + " for ProxyInvoker " + name);
+		}
 		delegate = p;
 	}
 	public I_Invoker getDelegate() {
