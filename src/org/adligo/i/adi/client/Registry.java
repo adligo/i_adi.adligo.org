@@ -20,6 +20,14 @@ import org.adligo.i.log.client.LogFactory;
  * a end all be all wrapper for 
  * stateless threadsafe code
  * 
+ * It is intended to be a general api for hiding;
+ * 1) The location of the code, is it calling local or remote code?
+ * 2) The implementation details of the code so that the code can have
+ * 		swappable parts
+ * 3) It is intended to run on J2ME, GWT and J2SE, I have borrowed the GWT
+ *    remote (RPC) plumbing as the api since it is the most efficient
+ *    and will have the least blocking and waiting
+ * 
  * mostly this is storage code (could be Hibernate, Jdbc DAOs,
  * SearchEngine stuff (Lucene), FileSystem stuff , 
  * stuff cached in RAM from some of the previous sources exc..)
@@ -61,12 +69,7 @@ public final class Registry  {
 	 * CLDC 2.0
 	 */
 	private static I_Map methods;
-	/*
-	 * <String,I_CheckedInvoker>
-	 */
-	private static I_Map checkedMethods;
 	private static I_Collection preInitProxyMethods = new ArrayCollection();
-	private static I_Collection preInitProxyCheckedMethods = new ArrayCollection();
 	
 	
 	protected Registry() { 
@@ -85,6 +88,11 @@ public final class Registry  {
 	 * but generally the goal is to keep things simple
 	 * so in the adligo code names will look like
 	 * 
+	 * Note since one of the objectives of Adi is to hide the location of the code
+	 * (ie is it remote or local code) I have chosen googles RPC api
+	 * since I feel it best handles remote code
+	 * and can also be used to handle local code
+	 * 
 	 * getPersons
 	 * savePersons
 	 * findSocks
@@ -93,33 +101,13 @@ public final class Registry  {
 	 * 
 	 * @return
 	 */
-	public static synchronized I_CheckedInvoker getCheckedInvoker(String p) {
-		
-		I_CheckedInvoker toRet = null;
-		if (checkedMethods == null) {
-			toRet = new ProxyCheckedInvoker(p);
-			preInitProxyCheckedMethods.add(toRet);
-		} else {
-			toRet = (I_CheckedInvoker) checkedMethods.get(p);
-		}
-		// not sure why this log message doesn't work???
-		if (log.isDebugEnabled()) {
-			log.debug("Returning " + toRet + " for checked key " + p);
-		}
-		return toRet;
-	}
-
-
-	/**
-	 * @see getCheckedInvoker method same idea
-	 */
-	public static synchronized I_Invoker getInvoker(String p) {
-		I_Invoker toRet = null;
+	public static synchronized I_InvokerAsync getInvoker(String p) {
+		I_InvokerAsync toRet = null;
 		if (methods == null) {
 			toRet = new ProxyInvoker(p);
 			preInitProxyMethods.add(toRet);
 		} else {
-			toRet = (I_Invoker) methods.get(p);
+			toRet = (I_InvokerAsync) methods.get(p);
 		}
 		// not sure why this log message doesn't work from GWT???
 		if (log.isDebugEnabled()) {
@@ -169,7 +157,7 @@ public final class Registry  {
 				while (it.hasNext()) {
 					ProxyInvoker pi = (ProxyInvoker) it.next();
 					methods.put(pi.getName(), pi);
-					I_Invoker del = (I_Invoker) p.get(pi.getName()); 
+					I_InvokerAsync del = (I_InvokerAsync) p.get(pi.getName()); 
 					pi.setDelegate(del);
 					if (log.isInfoEnabled()) {
 						log.info("put " + del  + " in " + pi);
@@ -184,7 +172,7 @@ public final class Registry  {
 		while (it.hasNext()) {
 			String key = (String) it.next();
 			ProxyInvoker pi = (ProxyInvoker) methods.get(key);
-			I_Invoker invoker = (I_Invoker) p.get(key);
+			I_InvokerAsync invoker = (I_InvokerAsync) p.get(key);
 			if (pi != null) {
 				if (pi.getDelegate() == null) {
 					pi.setDelegate(invoker);
@@ -201,58 +189,16 @@ public final class Registry  {
 			System.out.println("exiting addInvokerDelegates...");
 		}
 	}
+	
 	/**
-	 * new api for initalization
+	 * 
+	 * @return a iterator of ProxyInvoker objects that have been requested
+	 * by the static initalizers
+	 * 
+	 * used to 
 	 */
-	public static synchronized void addCheckedInvokerDelegates(I_Map p) {
-		if (checkedMethods == null) {
-			checkedMethods = MapFactory.create();
-			if (preInitProxyCheckedMethods.size() == 0) {
-				I_Iterator it = p.getIterator();
-				while (it.hasNext()) {
-					String key = (String) it.next();
-					I_CheckedInvoker pi = (I_CheckedInvoker) checkedMethods.get(key);
-					if (pi == null) {
-						I_CheckedInvoker invoker = (I_CheckedInvoker) p.get(key);
-						if (log.isInfoEnabled()) {
-							log.info("putting checked invoker " + key + " obj " + invoker);
-						}
-						checkedMethods.put(key, invoker);
-					}
-				}
-			} else {
-				if (log.isDebugEnabled()) {
-					log.debug("creating checkedMethods object preInitProxycheckedMethods has " + 
-							preInitProxyCheckedMethods.size());
-				}
-				
-				
-				I_Iterator it = preInitProxyCheckedMethods.getIterator();
-				while (it.hasNext()) {
-					ProxyCheckedInvoker pi = (ProxyCheckedInvoker) it.next();
-					checkedMethods.put(pi.getName(), pi);
-					pi.setDelegate((I_CheckedInvoker) p.get(pi.getName()));
-					if (log.isInfoEnabled()) {
-						log.info("put ProxyCheckedInvoker " + pi);
-					}
-				}
-				
-				preInitProxyCheckedMethods.clear();
-			}
-		} 
-		
-		I_Iterator it = p.getIterator();
-		while (it.hasNext()) {
-			String key = (String) it.next();
-			ProxyCheckedInvoker pi = (ProxyCheckedInvoker) checkedMethods.get(key);
-			I_CheckedInvoker invoker = (I_CheckedInvoker) p.get(key);
-			if (pi != null) {
-				if (pi.getDelegate() == null) {
-					pi.setDelegate(invoker);
-				}
-			} else {
-				checkedMethods.put(key, invoker);
-			}
-		}
+	public static I_Iterator getPreInitIterator() {
+		return preInitProxyMethods.getIterator();
 	}
+	
 }

@@ -1,18 +1,16 @@
 package org.adligo.i.adi.client.cache;
 
 import org.adligo.i.adi.client.I_Invoker;
+import org.adligo.i.adi.client.I_InvokerAsync;
 
-public class CacheWriter implements I_Invoker {
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
-	public Object invoke(Object valueObject) {
+public class CacheWriter implements I_InvokerAsync {
+
+	public void invoke(Object valueObject, AsyncCallback callback) {
 		CacheEditToken token = (CacheEditToken) valueObject;
-		if (token.getName() != null) {
-			synchronized (this) {
-				Cache.items.put(token.getName(), token.getValue());
-			}
-			return Boolean.TRUE;
-		} else {
-			return Boolean.FALSE;
+		synchronized (this) {
+			Cache.items.put(token.getName(), token.getValue());
 		}
 		
 	}

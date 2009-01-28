@@ -3,10 +3,20 @@ package org.adligo.i.adi.client;
 import org.adligo.i.log.client.Log;
 import org.adligo.i.log.client.LogFactory;
 
-public class ProxyInvoker implements I_Invoker {
+import com.google.gwt.user.client.rpc.AsyncCallback;
+
+/**
+ * this class is used to have deferred initalization in the same way that
+ * i_log works so that you always get a object back from the 
+ * Registry.getInvoker method
+ * 
+ * @author scott
+ *
+ */
+public class ProxyInvoker implements I_InvokerAsync {
 	private static final Log log = LogFactory.getLog(ProxyInvoker.class);
 	private String name;
-	private I_Invoker delegate;
+	private I_InvokerAsync delegate;
 
 	public ProxyInvoker(String name) {
 		if (name == null) {
@@ -16,33 +26,35 @@ public class ProxyInvoker implements I_Invoker {
 		this.name = name;
 	}
 	
-	public ProxyInvoker(String name, I_Invoker p) {
+	public ProxyInvoker(String name, I_InvokerAsync p) {
 		this(name);
 		delegate = p;
 	}
 	
-	protected String getName() {
+	public String getName() {
 		return name;
 	}
 	
-	public synchronized void setDelegate(I_Invoker p) {
+	public synchronized void setDelegate(I_InvokerAsync p) {
 		if (log.isDebugEnabled()) {
-			log.debug("getting invoker " + p + " for ProxyInvoker " + name);
+			log.debug("setting invoker " + p + " for ProxyInvoker " + name);
 		}
 		delegate = p;
 	}
-	public I_Invoker getDelegate() {
+	
+	public I_InvokerAsync getDelegate() {
 		return delegate;
 	}
 	
 	
-	public Object invoke(Object valueObject) {
+	public void invoke(Object valueObject, AsyncCallback callback) {
 		if (delegate == null) {
-			Exception e = new Exception();
+			Exception e = new Exception("Proxy for " + this.name + 
+					" isn't initalized yet!");
 			log.error("Proxy isn't initalized yet!", e);
-			return null;
+			callback.onFailure(e);
 		} else {
-			return delegate.invoke(valueObject);
+			delegate.invoke(valueObject, callback);
 		}
 	}
 

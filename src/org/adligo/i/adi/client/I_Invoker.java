@@ -1,5 +1,7 @@
 package org.adligo.i.adi.client;
 
+import com.google.gwt.user.client.rpc.RemoteService;
+
 /**
  * a wrapper interface to invoke a of a method of a 
  * stateless threadsafe implementation
@@ -7,7 +9,7 @@ package org.adligo.i.adi.client;
  * @author scott
  *
  */
-public interface I_Invoker {
+public interface I_Invoker extends RemoteService {
 	/**
 	 * 
 	 * @param a valueObject could be a Integer, String
