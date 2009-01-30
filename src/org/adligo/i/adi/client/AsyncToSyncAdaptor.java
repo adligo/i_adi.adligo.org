@@ -90,8 +90,7 @@ public class AsyncToSyncAdaptor implements AsyncCallback, Runnable {
 		
 		Throwable t = adaptor.getCaught();
 		if (t != null) {
-			// Some Security Exception, just log 
-			// and return nothing
+			// Some Exception so throw it
 			adaptor.dispose();
 			throw t;
 		}
