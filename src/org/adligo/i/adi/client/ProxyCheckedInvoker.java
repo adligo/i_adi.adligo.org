@@ -3,12 +3,12 @@ package org.adligo.i.adi.client;
 import org.adligo.i.log.client.Log;
 import org.adligo.i.log.client.LogFactory;
 
-public class ProxyInvoker implements I_Invoker {
-	private static final Log log = LogFactory.getLog(ProxyInvoker.class);
+public class ProxyCheckedInvoker implements I_CheckedInvoker {
+	private static final Log log = LogFactory.getLog(ProxyCheckedInvoker.class);
 	private String name;
-	private I_Invoker delegate;
+	private I_CheckedInvoker delegate;
 
-	public ProxyInvoker(String name) {
+	public ProxyCheckedInvoker(String name) {
 		if (name == null) {
 			Exception e = new NullPointerException();
 			log.error("Null ProxyInvoker Name!", e);
@@ -16,7 +16,7 @@ public class ProxyInvoker implements I_Invoker {
 		this.name = name;
 	}
 	
-	public ProxyInvoker(String name, I_Invoker p) {
+	public ProxyCheckedInvoker(String name, I_CheckedInvoker p ) {
 		this(name);
 		delegate = p;
 	}
@@ -25,27 +25,25 @@ public class ProxyInvoker implements I_Invoker {
 		return name;
 	}
 	
-	public synchronized void setDelegate(I_Invoker p) {
+	public synchronized void setDelegate(I_CheckedInvoker p) {
 		if (log.isDebugEnabled()) {
 			log.debug("getting invoker " + p + " for ProxyInvoker " + name);
 		}
 		delegate = p;
 	}
-	public I_Invoker getDelegate() {
+	public I_CheckedInvoker getDelegate() {
 		return delegate;
 	}
 	
-	
-	public Object invoke(Object valueObject) {
+	public Object invoke(Object valueObject) throws InvocationException {
 		if (delegate == null) {
-			Exception e = new Exception();
-			log.error("Proxy isn't initalized yet!", e);
-			return null;
+			InvocationException e = new InvocationException("Proxy isn't initalized yet!");
+			throw e;
 		} else {
 			return delegate.invoke(valueObject);
 		}
 	}
-
+	
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
 		sb.append("ProxyInvoker [name=");
