@@ -178,19 +178,19 @@ public final class Registry  {
 				
 				preInitProxyMethods.clear();
 			}
-		} 
-		
-		I_Iterator it = p.getIterator();
-		while (it.hasNext()) {
-			String key = (String) it.next();
-			ProxyInvoker pi = (ProxyInvoker) methods.get(key);
-			I_Invoker invoker = (I_Invoker) p.get(key);
-			if (pi != null) {
-				if (pi.getDelegate() == null) {
-					pi.setDelegate(invoker);
+		} else {
+			I_Iterator it = p.getIterator();
+			while (it.hasNext()) {
+				String key = (String) it.next();
+				ProxyInvoker pi = (ProxyInvoker) methods.get(key);
+				I_Invoker invoker = (I_Invoker) p.get(key);
+				if (pi != null) {
+					if (pi.getDelegate() == null) {
+						pi.setDelegate(invoker);
+					}
+				} else {
+					methods.put(key, invoker);
 				}
-			} else {
-				methods.put(key, invoker);
 			}
 		}
 		// not sure why this log message isn't working?
