@@ -1,20 +1,18 @@
 package org.adligo.i.adi.client;
 
-import com.google.gwt.user.client.rpc.RemoteService;
-
-/**
- * a wrapper interface to invoke a of a method of a 
- * stateless threadsafe implementation
- * 
- * @author scott
- *
- */
-public interface I_Invoker extends RemoteService {
+public interface I_Invoker extends I_HandlerAsync {
 	/**
+	 * this should return true if the invoker invokes a procedure on 
+	 * a remote machine (the way GWT RCP is tipically used
 	 * 
-	 * @param a valueObject could be a Integer, String
-	 *          I_TemplateParams, List exc
+	 * This is mostly just a convenience method 
+	 * to help with the adligo gwt_util's RpcProxy setup
+	 * since I am using this to wrap local code as well
+	 * 
+	 * may be usefull for j2me automated setup or 
+	 * j2se rmi automated setup
+	 * 
 	 * @return
 	 */
-	public Object invoke(Object valueObject);
+	public boolean isLocal();
 }

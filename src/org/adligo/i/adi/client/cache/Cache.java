@@ -1,23 +1,20 @@
 package org.adligo.i.adi.client.cache;
 
 
-import org.adligo.i.adi.client.I_Invoker;
+import org.adligo.i.adi.client.I_Handler;
 import org.adligo.i.util.client.I_Map;
 import org.adligo.i.util.client.MapFactory;
 
 public class Cache {
-	/**
-	 * these are the traditional constants of the cache reader and writer
-	 */
-	public static final String CACHE_READER = "org.adligo.i.adi.client.cache.reader";
-	public static final String CACHE_WRITER = "org.adligo.i.adi.client.cache.writer";
-	
 	/**
 	 * The key should use a pathlike structure
 	 *  /package/name
 	 *  
 	 *  The system should define a list of items in a constant file
 	 *  
+	 *  your platform should be initalized before this class is loaded
+	 *  in j2se (j2ee) use a static block
+	 *  the way log4j apache commons logging initalizes
 	 */
 	protected static final I_Map items = MapFactory.create();
 	

@@ -13,10 +13,10 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * @author scott
  *
  */
-public class ProxyInvoker implements I_InvokerAsync {
+public class ProxyInvoker implements I_Invoker {
 	private static final Log log = LogFactory.getLog(ProxyInvoker.class);
 	private String name;
-	private I_InvokerAsync delegate;
+	private I_Invoker delegate;
 
 	public ProxyInvoker(String name) {
 		if (name == null) {
@@ -26,7 +26,7 @@ public class ProxyInvoker implements I_InvokerAsync {
 		this.name = name;
 	}
 	
-	public ProxyInvoker(String name, I_InvokerAsync p) {
+	public ProxyInvoker(String name, I_Invoker p) {
 		this(name);
 		delegate = p;
 	}
@@ -35,14 +35,14 @@ public class ProxyInvoker implements I_InvokerAsync {
 		return name;
 	}
 	
-	public synchronized void setDelegate(I_InvokerAsync p) {
+	public synchronized void setDelegate(I_Invoker p) {
 		if (log.isDebugEnabled()) {
 			log.debug("setting invoker " + p + " for ProxyInvoker " + name);
 		}
 		delegate = p;
 	}
 	
-	public I_InvokerAsync getDelegate() {
+	public I_HandlerAsync getDelegate() {
 		return delegate;
 	}
 	
@@ -67,5 +67,12 @@ public class ProxyInvoker implements I_InvokerAsync {
 		sb.append("]");
 		return sb.toString();
 		
+	}
+
+	public boolean isLocal() {
+		if (delegate == null) {
+			return false;
+		}
+		return delegate.isLocal();
 	}
 }

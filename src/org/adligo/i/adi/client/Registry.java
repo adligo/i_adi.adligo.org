@@ -72,8 +72,8 @@ public final class Registry  {
 	
 	
 	protected Registry() { 
-		preInitProxyMethods.add(new ProxyInvoker(Cache.CACHE_READER, new CacheReader()));
-		preInitProxyMethods.add(new ProxyInvoker(Cache.CACHE_WRITER, new CacheWriter()));
+		preInitProxyMethods.add(new ProxyInvoker(CommonInvokerNames.CACHE_READER, new CacheReader()));
+		preInitProxyMethods.add(new ProxyInvoker(CommonInvokerNames.CACHE_WRITER, new CacheWriter()));
 	}
 	
 
@@ -100,13 +100,13 @@ public final class Registry  {
 	 * 
 	 * @return
 	 */
-	public static synchronized I_InvokerAsync getInvoker(String p) {
-		I_InvokerAsync toRet = null;
+	public static synchronized I_Invoker getInvoker(String p) {
+		I_Invoker toRet = null;
 		if (methods == null) {
 			toRet = new ProxyInvoker(p);
 			preInitProxyMethods.add(toRet);
 		} else {
-			toRet = (I_InvokerAsync) methods.get(p);
+			toRet = (I_Invoker) methods.get(p);
 		}
 		if (log.isDebugEnabled()) {
 			log.debug("Returning " + toRet + " for key " + p);
@@ -128,9 +128,9 @@ public final class Registry  {
 				I_Iterator it = p.getIterator();
 				while (it.hasNext()) {
 					String key = (String) it.next();
-					I_Invoker pi = (I_Invoker) methods.get(key);
+					I_Handler pi = (I_Handler) methods.get(key);
 					if (pi == null) {
-						I_InvokerAsync invoker = (I_InvokerAsync) p.get(key);
+						I_Invoker invoker = (I_Invoker) p.get(key);
 						if (log.isInfoEnabled()) {
 							log.info("putting invoker " + key + " obj " + invoker);
 						}
@@ -150,7 +150,7 @@ public final class Registry  {
 				while (it.hasNext()) {
 					ProxyInvoker pi = (ProxyInvoker) it.next();
 					methods.put(pi.getName(), pi);
-					I_InvokerAsync del = (I_InvokerAsync) p.get(pi.getName()); 
+					I_Invoker del = (I_Invoker) p.get(pi.getName()); 
 					pi.setDelegate(del);
 					if (log.isInfoEnabled()) {
 						log.info("put " + del  + " in " + pi);
@@ -164,7 +164,7 @@ public final class Registry  {
 			while (it.hasNext()) {
 				String key = (String) it.next();
 				ProxyInvoker pi = (ProxyInvoker) methods.get(key);
-				I_InvokerAsync invoker = (I_InvokerAsync) p.get(key);
+				I_Invoker invoker = (I_Invoker) p.get(key);
 				if (pi != null) {
 					if (pi.getDelegate() == null) {
 						pi.setDelegate(invoker);
