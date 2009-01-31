@@ -2,13 +2,40 @@ package org.adligo.i.adi.client;
 
 import org.adligo.i.log.client.Log;
 import org.adligo.i.log.client.LogFactory;
+import org.adligo.i.util.client.ArrayCollection;
+import org.adligo.i.util.client.I_Iterator;
 
 public class ProxyCheckedInvoker implements I_CheckedInvoker {
 	private static final Log log = LogFactory.getLog(ProxyCheckedInvoker.class);
+	private static final ArrayCollection preInitInvokers = new ArrayCollection();
+	
+	public static ProxyCheckedInvoker getInstance(String name) {
+		return getInstance(name, null);
+	}
+	
+	public static synchronized ProxyCheckedInvoker getInstance(
+			String name, I_CheckedInvoker delegate) {
+			
+		ProxyCheckedInvoker newPi = new ProxyCheckedInvoker(name, delegate);
+		ProxyCheckedInvoker oldPi = (ProxyCheckedInvoker) preInitInvokers.get(newPi);
+		if (oldPi == null) {
+			preInitInvokers.add(newPi);
+			return newPi;
+		}
+		return oldPi;
+	}
+	
+	public static I_Iterator getPreInitInvokers() {
+		return preInitInvokers.getIterator();
+	}
+	
+	/**
+	 * start instance code
+	 */
 	private String name;
 	private I_CheckedInvoker delegate;
 
-	public ProxyCheckedInvoker(String name) {
+	private ProxyCheckedInvoker(String name) {
 		if (name == null) {
 			Exception e = new NullPointerException();
 			log.error("Null ProxyInvoker Name!", e);
@@ -16,7 +43,7 @@ public class ProxyCheckedInvoker implements I_CheckedInvoker {
 		this.name = name;
 	}
 	
-	public ProxyCheckedInvoker(String name, I_CheckedInvoker p ) {
+	private ProxyCheckedInvoker(String name, I_CheckedInvoker p ) {
 		this(name);
 		delegate = p;
 	}

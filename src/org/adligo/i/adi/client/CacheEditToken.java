@@ -1,4 +1,4 @@
-package org.adligo.i.adi.client.cache;
+package org.adligo.i.adi.client;
 
 public class CacheEditToken {
 	/**

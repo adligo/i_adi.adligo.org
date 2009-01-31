@@ -7,9 +7,6 @@ import org.adligo.i.util.client.I_Iterator;
 import org.adligo.i.util.client.I_Map;
 import org.adligo.i.util.client.MapFactory;
 
-import org.adligo.i.adi.client.cache.Cache;
-import org.adligo.i.adi.client.cache.CacheReader;
-import org.adligo.i.adi.client.cache.CacheWriter;
 import org.adligo.i.log.client.Log;
 import org.adligo.i.log.client.LogFactory;
 
@@ -64,9 +61,7 @@ public final class Registry  {
 	 */
 	private static I_Map checkedMethods = null;
 	
-	private static I_Collection preInitMethods = new ArrayCollection();
-	private static I_Collection preInitCheckedMethods = new ArrayCollection();
-
+	
 	/**
 	 * call this from a static initalizier on J2SE and J2ME
 	 * or from the onLoad of your GWT module
@@ -74,18 +69,17 @@ public final class Registry  {
 	private static void init() { 
 		methods = MapFactory.create();
 		checkedMethods = MapFactory.create();
-		methods.put(InvokerNames.CACHE_READER, 
-				new ProxyInvoker(InvokerNames.CACHE_READER, new CacheReader()));
-		methods.put(InvokerNames.CACHE_WRITER, 
-				new ProxyInvoker(InvokerNames.CACHE_WRITER, new CacheWriter()));
 		
-		I_Iterator it = preInitMethods.getIterator();
+		I_Invoker cacheReader = new CacheReader();
+		I_Invoker cacheWriter = new CacheWriter();
+		
+		I_Iterator it = ProxyInvoker.getPreInitInvokers();
 		while (it.hasNext()) {
 			ProxyInvoker pi = (ProxyInvoker) it.next();
 			methods.put(pi.getName(), pi);
 		}
 		
-		it = preInitCheckedMethods.getIterator();
+		it = ProxyCheckedInvoker.getPreInitInvokers();
 		while (it.hasNext()) {
 			ProxyCheckedInvoker pi = (ProxyCheckedInvoker) it.next();
 			checkedMethods.put(pi.getName(), pi);
@@ -114,12 +108,11 @@ public final class Registry  {
 	public static synchronized I_CheckedInvoker getCheckedInvoker(String p) {
 		I_CheckedInvoker toRet = null;
 		if (checkedMethods == null) {
-			toRet = new ProxyCheckedInvoker(p);
-			preInitCheckedMethods.add(toRet);
+			toRet = ProxyCheckedInvoker.getInstance(p);
 		} else {
 			toRet = (I_CheckedInvoker) checkedMethods.get(p);
 			if (toRet == null) {
-				toRet = new ProxyCheckedInvoker(p);
+				toRet = ProxyCheckedInvoker.getInstance(p);
 				methods.put(p, toRet);
 			} 
 		}
@@ -137,12 +130,11 @@ public final class Registry  {
 	public static synchronized I_Invoker getInvoker(String p) {
 		I_Invoker toRet = null;
 		if (checkedMethods == null) {
-			toRet = new ProxyInvoker(p);
-			preInitMethods.add(toRet);
+			toRet = ProxyInvoker.getInstance(p);
 		} else {
 			toRet = (I_Invoker) methods.get(p);
 			if (toRet == null) {
-				toRet = new ProxyInvoker(p);
+				toRet = ProxyInvoker.getInstance(p);
 				methods.put(p, toRet);
 			} 
 		}

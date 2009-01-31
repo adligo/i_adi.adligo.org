@@ -1,7 +1,6 @@
-package org.adligo.i.adi.client.cache;
+package org.adligo.i.adi.client;
 
 
-import org.adligo.i.adi.client.I_Invoker;
 import org.adligo.i.util.client.I_Map;
 import org.adligo.i.util.client.MapFactory;
 
