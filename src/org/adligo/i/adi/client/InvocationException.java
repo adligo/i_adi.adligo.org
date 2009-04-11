@@ -14,6 +14,11 @@ package org.adligo.i.adi.client;
 
 public class InvocationException extends Exception {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8086030960203444535L;
+
 	public InvocationException() {}
 	
 	public InvocationException(String p) {

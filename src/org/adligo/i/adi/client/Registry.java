@@ -1,14 +1,10 @@
 package org.adligo.i.adi.client;
 
-import org.adligo.i.util.client.ArrayCollection;
-import org.adligo.i.util.client.CollectionFactory;
-import org.adligo.i.util.client.I_Collection;
+import org.adligo.i.log.client.Log;
+import org.adligo.i.log.client.LogFactory;
 import org.adligo.i.util.client.I_Iterator;
 import org.adligo.i.util.client.I_Map;
 import org.adligo.i.util.client.MapFactory;
-
-import org.adligo.i.log.client.Log;
-import org.adligo.i.log.client.LogFactory;
 
 
 /**
@@ -69,9 +65,6 @@ public final class Registry  {
 	private static void init() { 
 		methods = MapFactory.create();
 		checkedMethods = MapFactory.create();
-		
-		I_Invoker cacheReader = new CacheReader();
-		I_Invoker cacheWriter = new CacheWriter();
 		
 		I_Iterator it = ProxyInvoker.getPreInitInvokers();
 		while (it.hasNext()) {
@@ -146,7 +139,7 @@ public final class Registry  {
 	}
 	
 	/**
-	 * new api for initalization
+	 * new api for initialization
 	 * wouln't replace only sets the first time
 	 */
 	public static synchronized void addInvokerDelegates(I_Map p ) {

@@ -1,14 +1,12 @@
 package org.adligo.i.adi.client;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 import org.adligo.i.log.client.Log;
 import org.adligo.i.log.client.LogFactory;
+import org.adligo.i.util.client.ArrayCollection;
 import org.adligo.i.util.client.ClassUtils;
 import org.adligo.i.util.client.Event;
+import org.adligo.i.util.client.I_Iterator;
 import org.adligo.i.util.client.I_Listener;
 import org.adligo.i.util.client.I_Map;
 import org.adligo.i.util.client.MapFactory;
@@ -43,11 +41,11 @@ public class EventDelegator implements I_Listener {
 		Object val = eventMap.get(source);
 		if (val == null) {
 			eventMap.put(source, i);
-		} else if (ClassUtils.typeOf(val, ArrayList.class)) {
-			ArrayList list = (ArrayList) val;
+		} else if (ClassUtils.typeOf(val, ArrayCollection.class)) {
+			ArrayCollection list = (ArrayCollection) val;
 			list.add(i);
 		} else {
-			ArrayList list = new ArrayList();
+			ArrayCollection list = new ArrayCollection();
 			list.add(val);
 			list.add(i);
 			eventMap.put(source, list);
@@ -58,8 +56,8 @@ public class EventDelegator implements I_Listener {
 		Object val = eventMap.get(source);
 		if (val == null) {
 			// do nothing its not in there anyway
-		} else if (ClassUtils.typeOf(val, ArrayList.class)) {
-			ArrayList list = (ArrayList) val;
+		} else if (ClassUtils.typeOf(val, ArrayCollection.class)) {
+			ArrayCollection list = (ArrayCollection) val;
 			list.remove(i);
 		} else {
 			eventMap.remove(source);
@@ -77,14 +75,14 @@ public class EventDelegator implements I_Listener {
 		if (destination == null) {
 			throw new NullPointerException(
 					"No listener found for Event " + p);
-		} else if (ClassUtils.typeOf(destination, ArrayList.class)) {
+		} else if (ClassUtils.typeOf(destination, ArrayCollection.class)) {
 			
-			ArrayList list = (ArrayList) destination;
+			ArrayCollection list = (ArrayCollection) destination;
 			if (log.isDebugEnabled()) {
 				log.debug("onEvent with " + 
 						list.size() + " listeners ");
 			}
-			Iterator it = list.iterator();
+			I_Iterator it = list.getIterator();
 			
 			boolean first = true;
 			while (it.hasNext()) {
