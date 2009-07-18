@@ -32,7 +32,13 @@ public class EventDelegator implements I_Listener {
 	private static final Log log = LogFactory.getLog(EventDelegator.class);
 	
 	private I_Map eventMap = MapFactory.create();
+	private String name = "";
 	
+	public EventDelegator() {}
+	
+	public EventDelegator(String p_name) {
+		name = p_name;
+	}
 	/**
 	 * @param source
 	 * @param i
@@ -68,41 +74,43 @@ public class EventDelegator implements I_Listener {
 	public void onEvent(Event p) {
 		Object destination = eventMap.get(p.getSource());
 		if (log.isDebugEnabled()) {
-			log.debug("enter onEvent " + p + " destination is " +
+			log.debug(name + " enter onEvent " + p + "\n destination is " +
 					destination);
 		}
 		
 		if (destination == null) {
 			throw new NullPointerException(
-					"No listener found for Event " + p);
+					name + " No listener found for Event " + p);
 		} else if (ClassUtils.typeOf(destination, ArrayCollection.class)) {
 			
 			ArrayCollection list = (ArrayCollection) destination;
 			if (log.isDebugEnabled()) {
-				log.debug("onEvent with " + 
+				log.debug( name + " onEvent with " + 
 						list.size() + " listeners ");
 			}
 			I_Iterator it = list.getIterator();
 			
 			boolean first = true;
+			int counter = 0;
 			while (it.hasNext()) {
-				I_Listener adaptor = (I_Listener) it.next();
+				I_Listener listener = (I_Listener) it.next();
 				if (first) {
-					send(p, adaptor);
+					send(p, listener, counter);
 					first = false;
 				} else {
-					send(p.copy(), adaptor);
+					send(p.copy(), listener, counter);
 				}
+				counter++;
 			}
 		} else {
-			send(p, (I_Listener) destination);
+			send(p, (I_Listener) destination, 0);
 		}
 	}
 
-	private void send(Event p, I_Listener adaptor) {
+	private void send(Event p, I_Listener listener, int counter) {
 		if (log.isDebugEnabled()) {
-			log.debug("sending event " + p + " to " + adaptor);
+			log.debug(name + " sending event " + p + "\n to listener " + counter + "," + listener);
 		}
-		adaptor.onEvent(p);
+		listener.onEvent(p);
 	}
 }

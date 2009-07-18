@@ -1,6 +1,5 @@
 package org.adligo.i.adi.client;
 
-
 import org.adligo.i.util.client.I_Map;
 import org.adligo.i.util.client.MapFactory;
 
@@ -16,4 +15,6 @@ public class Cache {
 	protected static final I_Map items = MapFactory.create();
 	
 	private Cache() {};
+	
+	
 }

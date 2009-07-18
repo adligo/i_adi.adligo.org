@@ -152,18 +152,23 @@ public final class Registry  {
 		I_Iterator it = p.getIterator();
 		while (it.hasNext()) {
 			String key = (String) it.next();
-			ProxyInvoker pi = (ProxyInvoker) methods.get(key);
-			I_Invoker invoker = (I_Invoker) p.get(key);
-			if (pi != null) {
-				if (pi.getDelegate() == null) {
-					pi.setDelegate(invoker);
-				}
-			} else {
-				methods.put(key, invoker);
-			}
+			addInvokerDelegate(p, key);
 		}
 		if (log.isDebugEnabled()) {
 			log.debug("exiting addInvokerDelegates...");
+		}
+	}
+
+
+	private static void addInvokerDelegate(I_Map p, String key) {
+		ProxyInvoker pi = (ProxyInvoker) methods.get(key);
+		I_Invoker invoker = (I_Invoker) p.get(key);
+		if (pi != null) {
+			if (pi.getDelegate() == null) {
+				pi.setDelegate(invoker);
+			}
+		} else {
+			methods.put(key, new ProxyInvoker(key, invoker));
 		}
 	}
 	/**
@@ -175,16 +180,75 @@ public final class Registry  {
 		}
 		I_Iterator it = p.getIterator();
 		while (it.hasNext()) {
-			String key = (String) it.next();
-			ProxyCheckedInvoker pi = (ProxyCheckedInvoker) checkedMethods.get(key);
-			I_CheckedInvoker invoker = (I_CheckedInvoker) p.get(key);
-			if (pi != null) {
-				if (pi.getDelegate() == null) {
-					pi.setDelegate(invoker);
-				}
-			} else {
-				checkedMethods.put(key, invoker);
+			addCheckedInvokerDelegate(p, (String) it.next());
+		}
+	}
+
+
+	private static void addCheckedInvokerDelegate(I_Map p, String key) {
+		ProxyCheckedInvoker pi = (ProxyCheckedInvoker) checkedMethods.get(key);
+		I_CheckedInvoker invoker = (I_CheckedInvoker) p.get(key);
+		if (pi != null) {
+			if (pi.getDelegate() == null) {
+				pi.setDelegate(invoker);
 			}
+		} else {
+			checkedMethods.put(key, invoker);
+		}
+	}
+	
+	/**
+	 * will add if not present
+	 * or replace if there
+	 * @param p
+	 */
+	public static synchronized void replaceInvokerDelegates(I_Map p ) {
+		if (log.isDebugEnabled()) {
+			log.debug("entering replaceInvokerDelegates...");
+		}
+		if (methods == null) {
+			init();
+		}
+		I_Iterator it = p.getIterator();
+		while (it.hasNext()) {
+			String key = (String) it.next();
+			ProxyInvoker pi = (ProxyInvoker) methods.get(key);
+			if (pi.getDelegate() == null) {
+				addInvokerDelegate(p, key);
+			} else {
+				pi.setDelegate((I_Invoker) p.get(key));
+			}
+		}
+		if (log.isDebugEnabled()) {
+			log.debug("exiting replaceInvokerDelegates...");
+		}
+	}
+	
+	
+	/**
+	 * will add if not present
+	 * or replace if there
+	 * @param p
+	 */
+	public static synchronized void replaceCheckedInvokerDelegates(I_Map p ) {
+		if (log.isDebugEnabled()) {
+			log.debug("entering replaceCheckedInvokerDelegates...");
+		}
+		if (methods == null) {
+			init();
+		}
+		I_Iterator it = p.getIterator();
+		while (it.hasNext()) {
+			String key = (String) it.next();
+			ProxyInvoker pi = (ProxyInvoker) checkedMethods.get(key);
+			if (pi.getDelegate() == null) {
+				addCheckedInvokerDelegate(p, key);
+			} else {
+				pi.setDelegate((I_Invoker) p.get(key));
+			}
+		}
+		if (log.isDebugEnabled()) {
+			log.debug("exiting replaceInvokerDelegates...");
 		}
 	}
 }

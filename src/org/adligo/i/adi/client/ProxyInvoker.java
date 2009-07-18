@@ -12,6 +12,9 @@ public class ProxyInvoker implements I_Invoker {
 		new ProxyInvoker(InvokerNames.CACHE_READER, new CacheReader());
 	private static final ProxyInvoker CACHE_WRITER = 
 		new ProxyInvoker(InvokerNames.CACHE_WRITER, new CacheWriter());
+	private static final ProxyInvoker CONFIG_PROVIDER = 
+		new ProxyInvoker(InvokerNames.CONFIGURATION_PROVIDER,
+				new BaseConfigProvider());
 	
 	public static ProxyInvoker getInstance(String name) {
 		return getInstance(name, null);
@@ -29,6 +32,9 @@ public class ProxyInvoker implements I_Invoker {
 		}
 		if (InvokerNames.CACHE_WRITER.equals(name)) {
 			newPi = CACHE_WRITER;
+		}
+		if (InvokerNames.CONFIGURATION_PROVIDER.equals(name)) {
+			newPi = CONFIG_PROVIDER;
 		}
 		ProxyInvoker oldPi = (ProxyInvoker) preInitInvokers.get(newPi);
 		
@@ -52,7 +58,7 @@ public class ProxyInvoker implements I_Invoker {
 	private String name;
 	private I_Invoker delegate;
 
-	private ProxyInvoker(String name) {
+	ProxyInvoker(String name) {
 		if (name == null) {
 			Exception e = new NullPointerException();
 			log.error("Null ProxyInvoker Name!", e);
@@ -60,7 +66,7 @@ public class ProxyInvoker implements I_Invoker {
 		this.name = name;
 	}
 	
-	private ProxyInvoker(String name, I_Invoker p) {
+	ProxyInvoker(String name, I_Invoker p) {
 		this(name);
 		delegate = p;
 	}
@@ -82,11 +88,17 @@ public class ProxyInvoker implements I_Invoker {
 	
 	public Object invoke(Object valueObject) {
 		if (delegate == null) {
-			Exception e = new Exception();
-			log.error("Proxy isn't initalized yet!", e);
-			return null;
+			RuntimeException e = new RuntimeException("Proxy isn't initalized yet for " + name + 
+					" please add one to your Adi Registry !");
+			log.error(e.getMessage(), e);
+			throw e;
 		} else {
-			return delegate.invoke(valueObject);
+			try {
+				return delegate.invoke(valueObject);
+			} catch (RuntimeException x) {
+				log.error(x.getMessage(), x);
+				throw x;
+			}
 		}
 	}
 
