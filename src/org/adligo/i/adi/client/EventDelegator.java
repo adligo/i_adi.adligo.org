@@ -72,44 +72,49 @@ public class EventDelegator implements I_Listener {
 	}
 
 	public void onEvent(Event p) {
-		Object destination = eventMap.get(p.getSource());
-		if (log.isDebugEnabled()) {
-			log.debug(name + " enter onEvent " + p + "\n destination is " +
-					destination);
-		}
-		
-		if (destination == null) {
-			throw new NullPointerException(
-					name + " No listener found for Event " + p);
-		} else if (ClassUtils.typeOf(destination, ArrayCollection.class)) {
-			
-			ArrayCollection list = (ArrayCollection) destination;
+		try {
+			Object destination = eventMap.get(p.getSource());
 			if (log.isDebugEnabled()) {
-				log.debug( name + " onEvent with " + 
-						list.size() + " listeners ");
+				log.debug(name + " enter onEvent " + p + "\n destination is " +
+						destination);
 			}
-			I_Iterator it = list.getIterator();
 			
-			boolean first = true;
-			int counter = 0;
-			while (it.hasNext()) {
-				I_Listener listener = (I_Listener) it.next();
-				if (first) {
-					send(p, listener, counter);
-					first = false;
-				} else {
-					send(p.copy(), listener, counter);
+			if (destination == null) {
+				throw new NullPointerException(
+						name + " No listener found for Event " + p);
+			} else if (ClassUtils.typeOf(destination, ArrayCollection.class)) {
+				
+				ArrayCollection list = (ArrayCollection) destination;
+				if (log.isDebugEnabled()) {
+					log.debug( name + " onEvent with " + 
+							list.size() + " listeners ");
 				}
-				counter++;
+				I_Iterator it = list.getIterator();
+				
+				boolean first = true;
+				int counter = 0;
+				while (it.hasNext()) {
+					I_Listener listener = (I_Listener) it.next();
+					if (first) {
+						send(p, listener, counter);
+						first = false;
+					} else {
+						send(p.copy(), listener, counter);
+					}
+					counter++;
+				}
+			} else {
+				send(p, (I_Listener) destination, 0);
 			}
-		} else {
-			send(p, (I_Listener) destination, 0);
+		} catch (Exception x) {
+			log.error(x.getMessage(), x);
 		}
 	}
 
 	private void send(Event p, I_Listener listener, int counter) {
 		if (log.isDebugEnabled()) {
-			log.debug(name + " sending event " + p + "\n to listener " + counter + "," + listener);
+			log.debug(name + " sending event " + p + "\n to listener " + 
+					counter + "," + listener);
 		}
 		listener.onEvent(p);
 	}
