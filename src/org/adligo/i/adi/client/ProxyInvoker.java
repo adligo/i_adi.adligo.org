@@ -12,6 +12,8 @@ public class ProxyInvoker implements I_Invoker {
 		new ProxyInvoker(InvokerNames.CACHE_READER, new CacheReader());
 	private static final ProxyInvoker CACHE_WRITER = 
 		new ProxyInvoker(InvokerNames.CACHE_WRITER, new CacheWriter());
+	private static final ProxyInvoker CACHE_REMOVER = 
+		new ProxyInvoker(InvokerNames.CACHE_REMOVER, new CacheRemover());
 	private static final ProxyInvoker CONFIG_PROVIDER = 
 		new ProxyInvoker(InvokerNames.CONFIGURATION_PROVIDER,
 				new BaseConfigProvider());
@@ -31,6 +33,9 @@ public class ProxyInvoker implements I_Invoker {
 			newPi = CACHE_READER;
 		}
 		if (InvokerNames.CACHE_WRITER.equals(name)) {
+			newPi = CACHE_WRITER;
+		}
+		if (InvokerNames.CACHE_REMOVER.equals(name)) {
 			newPi = CACHE_WRITER;
 		}
 		if (InvokerNames.CONFIGURATION_PROVIDER.equals(name)) {

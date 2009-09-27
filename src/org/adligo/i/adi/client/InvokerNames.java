@@ -6,6 +6,8 @@ public class InvokerNames {
 	 */
 	public static final String CACHE_READER = "org.adligo.i.adi.cache_reader";
 	public static final String CACHE_WRITER = "org.adligo.i.adi.cache_writer";
+	public static final String CACHE_REMOVER = "org.adligo.i.adi.cache_remover";
+	
 	/**
 	 * 
 	 * for END USER (admin NOT programmer) configuration information 
