@@ -1,6 +1,5 @@
 package org.adligo.i.adi.client;
 
-import org.adligo.i.adi.client.models.CacheKey;
 import org.adligo.i.adi.client.models.CacheRemoverToken;
 import org.adligo.i.util.client.I_Iterator;
 
@@ -15,16 +14,8 @@ public class CacheRemover implements I_Invoker {
 						Cache.items.remove(it.next());
 					}
 				break;
-			case CacheRemoverToken.SWEEP_ALL_TYPE:
-					// stop the world and collect
-					I_Iterator it2 = Cache.items.getIterator();
-					while (it2.hasNext()) {
-						CacheKey key = (CacheKey) it2.next();
-						if (key.shouldEvict()) {
-							Cache.items.remove(key);
-						}
-					}
-				break;
+			default:
+					throw new RuntimeException(token.getType() + " not yet supported");
 		}
 		return Boolean.TRUE;
 	}

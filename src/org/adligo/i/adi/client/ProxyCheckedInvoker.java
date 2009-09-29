@@ -35,7 +35,7 @@ public class ProxyCheckedInvoker implements I_CheckedInvoker {
 	private String name;
 	private I_CheckedInvoker delegate;
 
-	private ProxyCheckedInvoker(String name) {
+	ProxyCheckedInvoker(String name) {
 		if (name == null) {
 			Exception e = new NullPointerException();
 			log.error("Null ProxyInvoker Name!", e);
@@ -43,7 +43,7 @@ public class ProxyCheckedInvoker implements I_CheckedInvoker {
 		this.name = name;
 	}
 	
-	private ProxyCheckedInvoker(String name, I_CheckedInvoker p ) {
+	ProxyCheckedInvoker(String name, I_CheckedInvoker p ) {
 		this(name);
 		delegate = p;
 	}
@@ -73,7 +73,8 @@ public class ProxyCheckedInvoker implements I_CheckedInvoker {
 	
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
-		sb.append("ProxyInvoker [name=");
+		sb.append(super.toString());
+		sb.append(" [name=");
 		sb.append(name);
 		sb.append(",delegate=");
 		sb.append(delegate);

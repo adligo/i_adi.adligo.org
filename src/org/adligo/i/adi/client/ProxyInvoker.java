@@ -36,7 +36,7 @@ public class ProxyInvoker implements I_Invoker {
 			newPi = CACHE_WRITER;
 		}
 		if (InvokerNames.CACHE_REMOVER.equals(name)) {
-			newPi = CACHE_WRITER;
+			newPi = CACHE_REMOVER;
 		}
 		if (InvokerNames.CONFIGURATION_PROVIDER.equals(name)) {
 			newPi = CONFIG_PROVIDER;
@@ -109,7 +109,8 @@ public class ProxyInvoker implements I_Invoker {
 
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
-		sb.append("ProxyInvoker [name=");
+		sb.append(super.toString());
+		sb.append(" [name=");
 		sb.append(name);
 		sb.append(",delegate=");
 		sb.append(delegate);

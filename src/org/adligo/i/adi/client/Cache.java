@@ -13,6 +13,10 @@ public class Cache {
 	 *  
 	 */
 	protected static final I_Map items = MapFactory.create();
+	/**
+	 * tried this with a single Key object and had issues in GWT
+	 */
+	protected static final I_Map itemsEditTimes = MapFactory.create();
 	
 	private Cache() {};
 	

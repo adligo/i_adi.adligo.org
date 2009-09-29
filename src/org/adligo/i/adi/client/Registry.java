@@ -203,8 +203,8 @@ public final class Registry  {
 	 * @param p
 	 */
 	public static synchronized void replaceInvokerDelegates(I_Map p ) {
-		if (log.isDebugEnabled()) {
-			log.debug("entering replaceInvokerDelegates...");
+		if (log.isInfoEnabled()) {
+			log.info("entering replaceInvokerDelegates...");
 		}
 		if (methods == null) {
 			init();
@@ -213,14 +213,23 @@ public final class Registry  {
 		while (it.hasNext()) {
 			String key = (String) it.next();
 			ProxyInvoker pi = (ProxyInvoker) methods.get(key);
-			if (pi.getDelegate() == null) {
-				addInvokerDelegate(p, key);
-			} else {
+			if (pi == null) {
+				pi = new ProxyInvoker(key);
 				pi.setDelegate((I_Invoker) p.get(key));
+				methods.put(key, pi);
+			} else {
+				if (pi.getDelegate() == null) {
+					addInvokerDelegate(p, key);
+				} else {
+					pi.setDelegate((I_Invoker) p.get(key));
+				}
+			}
+			if (log.isDebugEnabled()) {
+				log.info("replaceInvokerDelegates " + key + " is now " + pi);
 			}
 		}
-		if (log.isDebugEnabled()) {
-			log.debug("exiting replaceInvokerDelegates...");
+		if (log.isInfoEnabled()) {
+			log.info("exiting replaceInvokerDelegates...");
 		}
 	}
 	
@@ -231,8 +240,8 @@ public final class Registry  {
 	 * @param p
 	 */
 	public static synchronized void replaceCheckedInvokerDelegates(I_Map p ) {
-		if (log.isDebugEnabled()) {
-			log.debug("entering replaceCheckedInvokerDelegates...");
+		if (log.isInfoEnabled()) {
+			log.info("entering replaceCheckedInvokerDelegates...");
 		}
 		if (methods == null) {
 			init();
@@ -240,15 +249,26 @@ public final class Registry  {
 		I_Iterator it = p.getIterator();
 		while (it.hasNext()) {
 			String key = (String) it.next();
-			ProxyInvoker pi = (ProxyInvoker) checkedMethods.get(key);
-			if (pi.getDelegate() == null) {
-				addCheckedInvokerDelegate(p, key);
+			ProxyCheckedInvoker pi = (ProxyCheckedInvoker) checkedMethods.get(key);
+			if (pi == null) {
+				if (pi == null) {
+					pi = new ProxyCheckedInvoker(key);
+					pi.setDelegate((I_CheckedInvoker) p.get(key));
+					checkedMethods.put(key, pi);
+				}
 			} else {
-				pi.setDelegate((I_Invoker) p.get(key));
+				if (pi.getDelegate() == null) {
+					addCheckedInvokerDelegate(p, key);
+				} else {
+					pi.setDelegate((I_CheckedInvoker) p.get(key));
+				}
+			}
+			if (log.isDebugEnabled()) {
+				log.info("replaceCheckedInvokerDelegates " + key + " is now " + pi);
 			}
 		}
-		if (log.isDebugEnabled()) {
-			log.debug("exiting replaceInvokerDelegates...");
+		if (log.isInfoEnabled()) {
+			log.info("exiting replaceInvokerDelegates...");
 		}
 	}
 }
