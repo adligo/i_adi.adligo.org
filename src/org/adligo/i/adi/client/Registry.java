@@ -271,4 +271,22 @@ public final class Registry  {
 			log.info("exiting replaceInvokerDelegates...");
 		}
 	}
+	
+	public static void debug() {
+		if (log.isDebugEnabled()) {
+			log.debug("Methods:\n");
+			I_Iterator it = methods.keys();
+			while (it.hasNext()) {
+				Object obj = it.next();
+				log.debug(obj);
+			}
+			log.debug("\n\nChecked Methods:\n");
+			I_Iterator it2 = checkedMethods.keys();
+			while (it2.hasNext()) {
+				Object obj = it2.next();
+				log.debug(obj);
+			}
+			log.debug("\n\n");
+		}
+	}
 }
