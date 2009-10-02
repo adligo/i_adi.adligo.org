@@ -1,11 +1,16 @@
 package org.adligo.i.adi.client;
 
 
+import java.util.List;
+
 import org.adligo.i.log.client.Log;
 import org.adligo.i.log.client.LogFactory;
 import org.adligo.i.util.client.ArrayCollection;
 import org.adligo.i.util.client.ClassUtils;
+import org.adligo.i.util.client.CollectionFactory;
 import org.adligo.i.util.client.Event;
+import org.adligo.i.util.client.I_Collection;
+import org.adligo.i.util.client.I_Event;
 import org.adligo.i.util.client.I_Iterator;
 import org.adligo.i.util.client.I_Listener;
 import org.adligo.i.util.client.I_Map;
@@ -71,7 +76,7 @@ public class EventDelegator implements I_Listener {
 		
 	}
 
-	public void onEvent(Event p) {
+	public void onEvent(I_Event p) {
 		try {
 			Object destination = eventMap.get(p.getSource());
 			if (log.isDebugEnabled()) {
@@ -99,7 +104,7 @@ public class EventDelegator implements I_Listener {
 						send(p, listener, counter);
 						first = false;
 					} else {
-						send(p.copy(), listener, counter);
+						send(new Event(p), listener, counter);
 					}
 					counter++;
 				}
@@ -111,7 +116,69 @@ public class EventDelegator implements I_Listener {
 		}
 	}
 
-	private void send(Event p, I_Listener listener, int counter) {
+
+	/**
+	 * slightly more expensive than onEvent
+	 * used to track responces
+	 * for instance from GwtUtilDemo on 10/2/2009
+	 * psudo code
+	 * 
+	 * ClickMeButton 
+	 *    |
+	 *    V
+	 * MainPanel 
+	 *    |
+	 *    V
+	 *    Disable ClickMeButton
+	 *    SendEvent -> UserEventController ->  HandlerA
+	 *                            |   \
+	 *                            |     ->  HandlerB (Async Call to Server)
+	 *                            \
+	 *                             -> Controller.getController().
+	 *                             			.getSystemEventController().trackHandlers(
+	 *                             				Event, HandlerA, HandlerB
+	 *                             			)      
+	 *                                 
+	 *                                       
+	 * MainPanel <- Event Pass 1  <- SystemEventController <- HandlerA
+	 *                             
+	 * MainPanel <- Event Pass 2  <- SystemEventController <- HandlerB
+	 * 
+	 * MainPanel <- Events for Source ClickMeButton done <- SystemEventController
+	 * 
+	 * MainPanel 
+	 *     |
+	 *     V
+	 *     Enable ClickMeButton
+	 *                                        
+	 * @param p
+	 * @return
+	 */
+	public I_Collection getDelegates(I_Event p) {
+		I_Collection results = CollectionFactory.create();
+		
+		try {
+			Object destination = eventMap.get(p.getSource());
+			if (log.isDebugEnabled()) {
+				log.debug(name + " enter getDelegates " + p + "\n destination is " +
+						destination);
+			}
+			
+			if (destination == null) {
+				throw new NullPointerException(
+						name + " No listener found for Event " + p);
+			} else if (ClassUtils.typeOf(destination, ArrayCollection.class)) {
+				return (I_Collection) destination;
+			} else {
+				results.add((I_Listener) destination);
+			}
+		} catch (Exception x) {
+			log.error(x.getMessage(), x);
+		}
+		return results;
+	}
+	
+	public void send(I_Event p, I_Listener listener, int counter) {
 		if (log.isDebugEnabled()) {
 			log.debug(name + " sending event " + p + "\n to listener " + 
 					counter + "," + listener);
