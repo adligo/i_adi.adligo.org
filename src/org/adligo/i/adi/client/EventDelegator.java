@@ -1,8 +1,6 @@
 package org.adligo.i.adi.client;
 
 
-import java.util.List;
-
 import org.adligo.i.log.client.Log;
 import org.adligo.i.log.client.LogFactory;
 import org.adligo.i.util.client.ArrayCollection;
