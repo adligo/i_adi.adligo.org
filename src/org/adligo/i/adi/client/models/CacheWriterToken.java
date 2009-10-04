@@ -4,12 +4,7 @@ public class CacheWriterToken {
 	public static final short SET_ALWAYS = 0;
 	public static final short ADD_ONLY_IF_NOT_PRESENT = 1;
 	public static final short REPLACE_ONLY_IF_PRESENT = 2;
-	
-	public static final int ONE_MINUTE_MINUTES = 5 * 60 * 1000;
-	public static final int FIVE_MINUTES = 5 * 60 * 1000;
-	public static final int TEN_MINUTE_MINUTES = 10 * 60 * 1000;
-	public static final int ONE_HOUR = 60 * 60 * 1000;
-	public static final int ONE_DAY = 24 * 60 * 60 * 1000;
+
 	
 	/**
 	 * should contain a path like name
