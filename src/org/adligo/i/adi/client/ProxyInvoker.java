@@ -57,6 +57,15 @@ public class ProxyInvoker implements I_Invoker {
 		return preInitInvokers.getIterator();
 	}
 	
+	static void clearPreInitInvokers() {
+		if (log.isErrorEnabled()) {
+			Exception x = new Exception();
+			x.fillInStackTrace();
+			log.error(" calling clearPreInitInvokers ok for tests only" , x);
+		}
+		preInitInvokers.clear();
+	}
+	
 	/**
 	 * start instance code
 	 */

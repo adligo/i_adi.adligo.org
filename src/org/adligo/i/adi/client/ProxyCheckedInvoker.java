@@ -54,7 +54,7 @@ public class ProxyCheckedInvoker implements I_CheckedInvoker {
 	
 	public synchronized void setDelegate(I_CheckedInvoker p) {
 		if (log.isDebugEnabled()) {
-			log.debug("getting invoker " + p + " for ProxyInvoker " + name);
+			log.debug(super.toString() + " getting invoker " + p + " for ProxyInvoker " + name);
 		}
 		delegate = p;
 	}
@@ -64,11 +64,20 @@ public class ProxyCheckedInvoker implements I_CheckedInvoker {
 	
 	public Object invoke(Object valueObject) throws InvocationException {
 		if (delegate == null) {
-			InvocationException e = new InvocationException("Proxy isn't initalized yet!");
+			InvocationException e = new InvocationException(name + " Proxy isn't initalized yet!");
 			throw e;
 		} else {
 			return delegate.invoke(valueObject);
 		}
+	}
+	
+	static void clearPreInitInvokers() {
+		if (log.isErrorEnabled()) {
+			Exception x = new Exception();
+			x.fillInStackTrace();
+			log.error(" calling clearPreInitInvokers ok for tests only" , x);
+		}
+		preInitInvokers.clear();
 	}
 	
 	public String toString() {

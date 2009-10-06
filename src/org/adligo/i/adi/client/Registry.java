@@ -59,8 +59,8 @@ public final class Registry  {
 	
 	
 	/**
-	 * call this from a static initalizier on J2SE and J2ME
-	 * or from the onLoad of your GWT module
+	 * common init code for this class
+	 * 
 	 */
 	private static void init() { 
 		methods = MapFactory.create();
@@ -79,6 +79,18 @@ public final class Registry  {
 		}
 	}
 	
+	/**
+	 * only use for testing
+	 */
+	static void uninit() {
+		if (log.isWarnEnabled()) {
+			Exception x = new Exception();
+			x.fillInStackTrace();
+			log.warn("uninit called from ", x);
+		}
+		methods = null;
+		checkedMethods = null;
+	}
 
 	/**
 	 * dynamic locator method to discover your implementations
@@ -106,7 +118,7 @@ public final class Registry  {
 			toRet = (I_CheckedInvoker) checkedMethods.get(p);
 			if (toRet == null) {
 				toRet = ProxyCheckedInvoker.getInstance(p);
-				methods.put(p, toRet);
+				checkedMethods.put(p, toRet);
 			} 
 		}
 		// not sure why this log message doesn't work from GWT???
@@ -122,7 +134,7 @@ public final class Registry  {
 	 */
 	public static synchronized I_Invoker getInvoker(String p) {
 		I_Invoker toRet = null;
-		if (checkedMethods == null) {
+		if (methods == null) {
 			toRet = ProxyInvoker.getInstance(p);
 		} else {
 			toRet = (I_Invoker) methods.get(p);
@@ -251,11 +263,9 @@ public final class Registry  {
 			String key = (String) it.next();
 			ProxyCheckedInvoker pi = (ProxyCheckedInvoker) checkedMethods.get(key);
 			if (pi == null) {
-				if (pi == null) {
 					pi = new ProxyCheckedInvoker(key);
 					pi.setDelegate((I_CheckedInvoker) p.get(key));
 					checkedMethods.put(key, pi);
-				}
 			} else {
 				if (pi.getDelegate() == null) {
 					addCheckedInvokerDelegate(p, key);
@@ -272,6 +282,17 @@ public final class Registry  {
 		}
 	}
 	
+	synchronized static void clear() {
+		if (methods != null) {
+			methods.clear();
+		}
+		if (checkedMethods != null) {
+			checkedMethods.clear();
+		}
+		ProxyInvoker.clearPreInitInvokers();
+		ProxyCheckedInvoker.clearPreInitInvokers();
+		
+	}
 	public static void debug() {
 		if (log.isDebugEnabled()) {
 			log.debug("Methods:\n");
