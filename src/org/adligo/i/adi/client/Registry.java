@@ -52,10 +52,7 @@ public final class Registry  {
 	 * CLDC 2.0
 	 */
 	private static I_Map methods = null;
-	/*
-	 * <String,I_CheckedInvoker>
-	 */
-	private static I_Map checkedMethods = null;
+	private static CheckedRegistry checked = new CheckedRegistry();
 	
 	
 	/**
@@ -64,19 +61,14 @@ public final class Registry  {
 	 */
 	private static void init() { 
 		methods = MapFactory.create();
-		checkedMethods = MapFactory.create();
+		
 		
 		I_Iterator it = ProxyInvoker.getPreInitInvokers();
 		while (it.hasNext()) {
 			ProxyInvoker pi = (ProxyInvoker) it.next();
 			methods.put(pi.getName(), pi);
 		}
-		
-		it = ProxyCheckedInvoker.getPreInitInvokers();
-		while (it.hasNext()) {
-			ProxyCheckedInvoker pi = (ProxyCheckedInvoker) it.next();
-			checkedMethods.put(pi.getName(), pi);
-		}
+		CheckedRegistry.init();
 	}
 	
 	/**
@@ -89,7 +81,7 @@ public final class Registry  {
 			log.warn("uninit called from ", x);
 		}
 		methods = null;
-		checkedMethods = null;
+		CheckedRegistry.uninit();
 	}
 
 	/**
@@ -111,21 +103,7 @@ public final class Registry  {
 	 * @return
 	 */
 	public static synchronized I_CheckedInvoker getCheckedInvoker(String p) {
-		I_CheckedInvoker toRet = null;
-		if (checkedMethods == null) {
-			toRet = ProxyCheckedInvoker.getInstance(p);
-		} else {
-			toRet = (I_CheckedInvoker) checkedMethods.get(p);
-			if (toRet == null) {
-				toRet = ProxyCheckedInvoker.getInstance(p);
-				checkedMethods.put(p, toRet);
-			} 
-		}
-		// not sure why this log message doesn't work from GWT???
-		if (log.isDebugEnabled()) {
-			log.debug("Returning " + toRet + " for key " + p);
-		}
-		return toRet;
+		return checked.getCheckedInvoker(p);
 	}
 
 
@@ -187,26 +165,12 @@ public final class Registry  {
 	 * new api for initalization
 	 */
 	public static synchronized void addCheckedInvokerDelegates(I_Map p) {
-		if (checkedMethods == null) {
-			init();
-		}
-		I_Iterator it = p.getIterator();
-		while (it.hasNext()) {
-			addCheckedInvokerDelegate(p, (String) it.next());
-		}
+		checked.addCheckedInvokerDelegates(p);
 	}
 
 
 	private static void addCheckedInvokerDelegate(I_Map p, String key) {
-		ProxyCheckedInvoker pi = (ProxyCheckedInvoker) checkedMethods.get(key);
-		I_CheckedInvoker invoker = (I_CheckedInvoker) p.get(key);
-		if (pi != null) {
-			if (pi.getDelegate() == null) {
-				pi.setDelegate(invoker);
-			}
-		} else {
-			checkedMethods.put(key, invoker);
-		}
+		checked.addCheckedInvokerDelegate(p, key);
 	}
 	
 	/**
@@ -252,47 +216,17 @@ public final class Registry  {
 	 * @param p
 	 */
 	public static synchronized void replaceCheckedInvokerDelegates(I_Map p ) {
-		if (log.isInfoEnabled()) {
-			log.info("entering replaceCheckedInvokerDelegates...");
-		}
-		if (methods == null) {
-			init();
-		}
-		I_Iterator it = p.getIterator();
-		while (it.hasNext()) {
-			String key = (String) it.next();
-			ProxyCheckedInvoker pi = (ProxyCheckedInvoker) checkedMethods.get(key);
-			if (pi == null) {
-					pi = new ProxyCheckedInvoker(key);
-					pi.setDelegate((I_CheckedInvoker) p.get(key));
-					checkedMethods.put(key, pi);
-			} else {
-				if (pi.getDelegate() == null) {
-					addCheckedInvokerDelegate(p, key);
-				} else {
-					pi.setDelegate((I_CheckedInvoker) p.get(key));
-				}
-			}
-			if (log.isDebugEnabled()) {
-				log.info("replaceCheckedInvokerDelegates " + key + " is now " + pi);
-			}
-		}
-		if (log.isInfoEnabled()) {
-			log.info("exiting replaceInvokerDelegates...");
-		}
+		checked.replaceCheckedInvokerDelegates(p);
 	}
 	
 	synchronized static void clear() {
 		if (methods != null) {
 			methods.clear();
 		}
-		if (checkedMethods != null) {
-			checkedMethods.clear();
-		}
 		ProxyInvoker.clearPreInitInvokers();
-		ProxyCheckedInvoker.clearPreInitInvokers();
-		
+		CheckedRegistry.clear();
 	}
+	
 	public static void debug() {
 		if (log.isDebugEnabled()) {
 			log.debug("Methods:\n");
@@ -302,12 +236,7 @@ public final class Registry  {
 				log.debug(obj);
 			}
 			log.debug("\n\nChecked Methods:\n");
-			I_Iterator it2 = checkedMethods.keys();
-			while (it2.hasNext()) {
-				Object obj = it2.next();
-				log.debug(obj);
-			}
-			log.debug("\n\n");
+			checked.debug();
 		}
 	}
 }
