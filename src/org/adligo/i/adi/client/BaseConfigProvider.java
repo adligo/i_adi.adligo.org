@@ -1,5 +1,7 @@
 package org.adligo.i.adi.client;
 
+import org.adligo.i.adi.client.models.ConfigRequest;
+
 
 public class BaseConfigProvider implements I_Invoker {
 	

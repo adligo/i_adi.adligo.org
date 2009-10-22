@@ -103,7 +103,7 @@ public class ProxyInvoker implements I_Invoker {
 	public Object invoke(Object valueObject) {
 		if (delegate == null) {
 			RuntimeException e = new RuntimeException("Proxy isn't initalized yet for " + name + 
-					" please add one to your Adi Registry !");
+					" please add one to your Adi Registry (or did you want a checked invoker ?) !");
 			log.error(e.getMessage(), e);
 			throw e;
 		} else {

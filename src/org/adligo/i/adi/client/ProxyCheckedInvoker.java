@@ -64,7 +64,8 @@ public class ProxyCheckedInvoker implements I_CheckedInvoker {
 	
 	public Object invoke(Object valueObject) throws InvocationException {
 		if (delegate == null) {
-			InvocationException e = new InvocationException(name + " Proxy isn't initalized yet!");
+			InvocationException e = new InvocationException("Proxy isn't initalized yet for " + name + 
+					" please add one to your Adi Registry (or did you want a non-checked invoker ?) !");
 			throw e;
 		} else {
 			return delegate.invoke(valueObject);

@@ -1,4 +1,4 @@
-package org.adligo.i.adi.client;
+package org.adligo.i.adi.client.models;
 
 public class ConfigRequest {
 	private String key;

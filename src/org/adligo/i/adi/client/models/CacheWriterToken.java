@@ -21,10 +21,18 @@ public class CacheWriterToken {
 	private short setPolicy = SET_ALWAYS;
 
 	/**
-	 * the number of seconds before the item should be
+	 * the number of seconds before the item may be
 	 * evicted from the cache (defaults to never)
 	 */
 	private Integer expiration_delta;
+	
+	/**
+	 * if provided should increment the cache value with name
+	 * 
+	 * was added for GAE (Google App Engine)
+	 * test stub
+	 */
+	private Integer increment_delta;
 	
 	public String getName() {
 		return name;
@@ -49,6 +57,12 @@ public class CacheWriterToken {
 	}
 	public void setSetPolicy(short setPolicy) {
 		this.setPolicy = setPolicy;
+	}
+	public Integer getIncrement_delta() {
+		return increment_delta;
+	}
+	public void setIncrement_delta(Integer incrementDelta) {
+		increment_delta = incrementDelta;
 	}
 	
 	
