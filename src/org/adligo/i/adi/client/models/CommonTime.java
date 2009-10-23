@@ -1,6 +1,7 @@
 package org.adligo.i.adi.client.models;
 
 public class CommonTime {
+	public static final String DEFAULT_TIME_FORMAT = "h:mm a";
 	public static final String DEFAULT_DATE_TIME_FORMAT = "MM/dd/yy h:mm a SSS";
 	public static final String DEFAULT_DATE_TIME_TIMEZONE_FORMAT = "MM/dd/yy h:mm a SSS Z";
 	
