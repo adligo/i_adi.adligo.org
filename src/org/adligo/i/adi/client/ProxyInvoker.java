@@ -8,15 +8,7 @@ import org.adligo.i.util.client.I_Iterator;
 public class ProxyInvoker implements I_Invoker {
 	private static final Log log = LogFactory.getLog(ProxyInvoker.class);
 	private static final ArrayCollection preInitInvokers = new ArrayCollection();
-	private static final ProxyInvoker CACHE_READER = 
-		new ProxyInvoker(InvokerNames.CACHE_READER, new CacheReader());
-	private static final ProxyInvoker CACHE_WRITER = 
-		new ProxyInvoker(InvokerNames.CACHE_WRITER, new CacheWriter());
-	private static final ProxyInvoker CACHE_REMOVER = 
-		new ProxyInvoker(InvokerNames.CACHE_REMOVER, new CacheRemover());
-	private static final ProxyInvoker CONFIG_PROVIDER = 
-		new ProxyInvoker(InvokerNames.CONFIGURATION_PROVIDER,
-				new BaseConfigProvider());
+
 	
 	public static ProxyInvoker getInstance(String name) {
 		return getInstance(name, null);
@@ -29,17 +21,9 @@ public class ProxyInvoker implements I_Invoker {
 			log.debug("Entering Named Singleton Factory for " + name);
 		}
 		ProxyInvoker newPi = new ProxyInvoker(name, delegate);
-		if (InvokerNames.CACHE_READER.equals(name)) {
-			newPi = CACHE_READER;
-		}
-		if (InvokerNames.CACHE_WRITER.equals(name)) {
-			newPi = CACHE_WRITER;
-		}
-		if (InvokerNames.CACHE_REMOVER.equals(name)) {
-			newPi = CACHE_REMOVER;
-		}
-		if (InvokerNames.CONFIGURATION_PROVIDER.equals(name)) {
-			newPi = CONFIG_PROVIDER;
+		ProxyInvoker stdPi = StandardInvokers.get(name);
+		if (stdPi != null) {
+			newPi = stdPi;
 		}
 		ProxyInvoker oldPi = (ProxyInvoker) preInitInvokers.get(newPi);
 		

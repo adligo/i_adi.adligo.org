@@ -9,6 +9,19 @@ public class InvokerNames {
 	public static final String CACHE_REMOVER = "org.adligo.i.adi.cache_remover";
 	
 	/**
+	 * returns something that returns System.currentTimeMillis()
+	 * stubbed out this way for unit tests of code which involve time
+	 */
+	public static final String CLOCK = "org.adligo.i.adi.clock";
+	
+	/**
+	 * sends something to System.out
+	 * stubbed out this way for unit tests of code which involves 
+	 * printing to the console
+	 */
+	public static final String OUT = "org.adligo.i.adi.out";
+	
+	/**
 	 * 
 	 * for END USER (admin NOT programmer) configuration information 
 	 * about the system
