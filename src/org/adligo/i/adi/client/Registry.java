@@ -80,10 +80,10 @@ public final class Registry  {
 	 * only use for testing
 	 */
 	static void uninit() {
-		if (log.isWarnEnabled()) {
+		if (Registry.quite_test_log.isErrorEnabled()) {
 			Exception x = new Exception();
 			x.fillInStackTrace();
-			log.warn("uninit called from ", x);
+			Registry.quite_test_log.warn("uninit called from ", x);
 		}
 		methods = null;
 		CheckedRegistry.uninit();
