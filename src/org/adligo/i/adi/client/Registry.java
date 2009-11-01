@@ -48,6 +48,11 @@ import org.adligo.i.util.client.MapFactory;
 public final class Registry  {
 	private static final Log log = LogFactory.getLog(Registry.class);
 	/**
+	 * only print out errors about running from tests 
+	 * when not running tests
+	 */
+	protected static final Log quite_test_log = LogFactory.getLog(Registry.class.getName() + "_tests");
+	/**
 	 * <String,I_Invoker> 
 	 * CLDC 2.0
 	 */
@@ -132,7 +137,7 @@ public final class Registry  {
 	 * new api for initialization
 	 * wouln't replace only sets the first time
 	 */
-	public static synchronized void addInvokerDelegates(I_Map p ) {
+	public static synchronized void addInvokers(I_Map p ) {
 		if (log.isDebugEnabled()) {
 			log.debug("entering addInvokerDelegates...");
 		}
@@ -142,35 +147,59 @@ public final class Registry  {
 		I_Iterator it = p.getIterator();
 		while (it.hasNext()) {
 			String key = (String) it.next();
-			addInvokerDelegate(p, key);
+			methods.put(key, new ProxyInvoker(key, (I_Invoker) p.get(key)));
 		}
 		if (log.isDebugEnabled()) {
 			log.debug("exiting addInvokerDelegates...");
 		}
 	}
 
-
-	private static void addInvokerDelegate(I_Map p, String key) {
+	public static synchronized void addInvoker(String key, I_Invoker invoker) {
+		if (methods == null) {
+			init();
+		}
 		ProxyInvoker pi = (ProxyInvoker) methods.get(key);
-		I_Invoker invoker = (I_Invoker) p.get(key);
-		if (pi != null) {
-			if (pi.getDelegate() == null) {
-				pi.setDelegate(invoker);
+		if (pi == null) {
+			methods.put(key, new ProxyInvoker(key, invoker));
+		} else {
+			if (log.isWarnEnabled()) {
+				log.warn("invoker with name " + key + " was NOT replaced when calling addInvoker");
 			}
+		}
+		if (log.isDebugEnabled()) {
+			log.info("addInvoker " + key + " is now " + methods.get(key));
+		}
+	}
+	
+	public static synchronized void addCheckedInvoker(String key, I_CheckedInvoker invoker){
+		checked.addCheckedInvoker(key, invoker);
+	}
+	
+	public static synchronized void addOrReplaceInvoker(String key, I_Invoker invoker) {
+		if (methods == null) {
+			init();
+		}
+		
+		ProxyInvoker pi = (ProxyInvoker) methods.get(key);
+		if (pi != null) {
+			pi.setDelegate(invoker);
 		} else {
 			methods.put(key, new ProxyInvoker(key, invoker));
 		}
+		if (log.isDebugEnabled()) {
+			log.info("addOrReplaceInvoker " + key + " is now " + methods.get(key));
+		}
 	}
+	
+	public static synchronized void addOrReplaceCheckedInvoker(String key, I_CheckedInvoker invoker) {
+		checked.addOrReplaceCheckedInvoker(key, invoker);
+	}
+	
 	/**
 	 * new api for initalization
 	 */
-	public static synchronized void addCheckedInvokerDelegates(I_Map p) {
-		checked.addCheckedInvokerDelegates(p);
-	}
-
-
-	private static void addCheckedInvokerDelegate(I_Map p, String key) {
-		checked.addCheckedInvokerDelegate(p, key);
+	public static synchronized void addCheckedInvokers(I_Map p) {
+		checked.addCheckedInvokers(p);
 	}
 	
 	/**
@@ -178,7 +207,7 @@ public final class Registry  {
 	 * or replace if there
 	 * @param p
 	 */
-	public static synchronized void replaceInvokerDelegates(I_Map p ) {
+	public static synchronized void addOrReplaceInvokers(I_Map p ) {
 		if (log.isInfoEnabled()) {
 			log.info("entering replaceInvokerDelegates...");
 		}
@@ -188,21 +217,20 @@ public final class Registry  {
 		I_Iterator it = p.getIterator();
 		while (it.hasNext()) {
 			String key = (String) it.next();
+			I_Invoker value = (I_Invoker) p.get(key);
 			ProxyInvoker pi = (ProxyInvoker) methods.get(key);
 			if (pi == null) {
 				pi = new ProxyInvoker(key);
-				pi.setDelegate((I_Invoker) p.get(key));
+				pi.setDelegate(value);
 				methods.put(key, pi);
 			} else {
 				if (pi.getDelegate() == null) {
-					addInvokerDelegate(p, key);
+					addOrReplaceInvoker(key, (I_Invoker) p.get(key));
 				} else {
 					pi.setDelegate((I_Invoker) p.get(key));
 				}
 			}
-			if (log.isDebugEnabled()) {
-				log.info("replaceInvokerDelegates " + key + " is now " + pi);
-			}
+			
 		}
 		if (log.isInfoEnabled()) {
 			log.info("exiting replaceInvokerDelegates...");
@@ -215,7 +243,7 @@ public final class Registry  {
 	 * or replace if there
 	 * @param p
 	 */
-	public static synchronized void replaceCheckedInvokerDelegates(I_Map p ) {
+	public static synchronized void addOrReplaceCheckedInvokers(I_Map p ) {
 		checked.replaceCheckedInvokerDelegates(p);
 	}
 	
@@ -230,10 +258,14 @@ public final class Registry  {
 	public static void debug() {
 		if (log.isDebugEnabled()) {
 			log.debug("Methods:\n");
-			I_Iterator it = methods.keys();
-			while (it.hasNext()) {
-				Object obj = it.next();
-				log.debug(obj);
+			if (methods != null) {
+				I_Iterator it = methods.keys();
+				while (it.hasNext()) {
+					Object obj = it.next();
+					log.debug(obj);
+				}
+			} else {
+				log.debug(" are null ");
 			}
 			log.debug("\n\nChecked Methods:\n");
 			checked.debug();

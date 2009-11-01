@@ -73,10 +73,10 @@ public class ProxyCheckedInvoker implements I_CheckedInvoker {
 	}
 	
 	static void clearPreInitInvokers() {
-		if (log.isErrorEnabled()) {
+		if (Registry.quite_test_log.isErrorEnabled()) {
 			Exception x = new Exception();
 			x.fillInStackTrace();
-			log.error(" calling clearPreInitInvokers ok for tests only" , x);
+			Registry.quite_test_log.error(" calling clearPreInitInvokers ok for tests only" , x);
 		}
 		preInitInvokers.clear();
 	}

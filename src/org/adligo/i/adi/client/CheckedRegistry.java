@@ -77,25 +77,28 @@ public class CheckedRegistry {
 	/**
 	 * new api for initalization
 	 */
-	void addCheckedInvokerDelegates(I_Map p) {
+	void addCheckedInvokers(I_Map p) {
 		if (checkedMethods == null) {
 			init();
 		}
 		I_Iterator it = p.getIterator();
 		while (it.hasNext()) {
-			addCheckedInvokerDelegate(p, (String) it.next());
+			String key = (String) it.next();
+			addCheckedInvoker(key, (I_CheckedInvoker) p.get(key));
 		}
 	}
 	
-	void addCheckedInvokerDelegate(I_Map p, String key) {
+	void addCheckedInvoker(String key, I_CheckedInvoker invoker) {
+		if (checkedMethods == null) {
+			init();
+		}
 		ProxyCheckedInvoker pi = (ProxyCheckedInvoker) checkedMethods.get(key);
-		I_CheckedInvoker invoker = (I_CheckedInvoker) p.get(key);
 		if (pi != null) {
 			if (pi.getDelegate() == null) {
 				pi.setDelegate(invoker);
 			}
 		} else {
-			checkedMethods.put(key, invoker);
+			checkedMethods.put(key, new ProxyCheckedInvoker(key, invoker));
 		}
 	}
 	
@@ -109,24 +112,25 @@ public class CheckedRegistry {
 		I_Iterator it = p.getIterator();
 		while (it.hasNext()) {
 			String key = (String) it.next();
-			ProxyCheckedInvoker pi = (ProxyCheckedInvoker) checkedMethods.get(key);
-			if (pi == null) {
-					pi = new ProxyCheckedInvoker(key);
-					pi.setDelegate((I_CheckedInvoker) p.get(key));
-					checkedMethods.put(key, pi);
-			} else {
-				if (pi.getDelegate() == null) {
-					addCheckedInvokerDelegate(p, key);
-				} else {
-					pi.setDelegate((I_CheckedInvoker) p.get(key));
-				}
-			}
-			if (log.isDebugEnabled()) {
-				log.info("replaceCheckedInvokerDelegates " + key + " is now " + pi);
-			}
+			I_CheckedInvoker value = (I_CheckedInvoker) p.get(key); 
+			addOrReplaceCheckedInvoker(key, value);
 		}
 		if (log.isInfoEnabled()) {
 			log.info("exiting replaceInvokerDelegates...");
+		}
+	}
+
+	void addOrReplaceCheckedInvoker(String key, I_CheckedInvoker value) {
+		ProxyCheckedInvoker pi = (ProxyCheckedInvoker) checkedMethods.get(key);
+		if (pi == null) {
+				pi = new ProxyCheckedInvoker(key);
+				pi.setDelegate(value);
+				checkedMethods.put(key, pi);
+		} else {
+			pi.setDelegate(value);
+		}
+		if (log.isDebugEnabled()) {
+			log.info("replaceCheckedInvokerDelegates " + key + " is now " + checkedMethods.get(key));
 		}
 	}
 	
@@ -138,10 +142,14 @@ public class CheckedRegistry {
 	}
 	
 	void debug() {
-		I_Iterator it2 = checkedMethods.keys();
-		while (it2.hasNext()) {
-			Object obj = it2.next();
-			log.debug(obj);
+		if (checkedMethods != null) {
+			I_Iterator it2 = checkedMethods.keys();
+			while (it2.hasNext()) {
+				Object obj = it2.next();
+				log.debug(obj);
+			}
+		} else {
+			log.debug(" are null");
 		}
 		log.debug("\n\n");
 	}
