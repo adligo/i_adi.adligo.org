@@ -96,9 +96,19 @@ public class CheckedRegistry {
 		if (pi != null) {
 			if (pi.getDelegate() == null) {
 				pi.setDelegate(invoker);
+				if (log.isInfoEnabled()) {
+					log.info("addCheckedInvoker " + key + " is now " + checkedMethods.get(key));
+				}
+			} else {
+				if (log.isWarnEnabled()) {
+					log.warn("checked invoker with name " + key + " was NOT replaced when calling addCheckedInvoker");
+				}
 			}
 		} else {
 			checkedMethods.put(key, new ProxyCheckedInvoker(key, invoker));
+			if (log.isInfoEnabled()) {
+				log.info("addCheckedInvoker " + key + " is now " + checkedMethods.get(key));
+			}
 		}
 	}
 	
@@ -129,7 +139,7 @@ public class CheckedRegistry {
 		} else {
 			pi.setDelegate(value);
 		}
-		if (log.isDebugEnabled()) {
+		if (log.isInfoEnabled()) {
 			log.info("replaceCheckedInvokerDelegates " + key + " is now " + checkedMethods.get(key));
 		}
 	}

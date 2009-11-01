@@ -147,7 +147,8 @@ public final class Registry  {
 		I_Iterator it = p.getIterator();
 		while (it.hasNext()) {
 			String key = (String) it.next();
-			methods.put(key, new ProxyInvoker(key, (I_Invoker) p.get(key)));
+			I_Invoker invoker = (I_Invoker) p.get(key);
+			addInvoker(key, invoker);
 		}
 		if (log.isDebugEnabled()) {
 			log.debug("exiting addInvokerDelegates...");
@@ -161,9 +162,19 @@ public final class Registry  {
 		ProxyInvoker pi = (ProxyInvoker) methods.get(key);
 		if (pi == null) {
 			methods.put(key, new ProxyInvoker(key, invoker));
+			if (log.isInfoEnabled()) {
+				log.info("addInvoker " + key + " is now " + methods.get(key));
+			}
 		} else {
-			if (log.isWarnEnabled()) {
-				log.warn("invoker with name " + key + " was NOT replaced when calling addInvoker");
+			if (pi.getDelegate() == null) {
+				pi.setDelegate(invoker);
+				if (log.isInfoEnabled()) {
+					log.info("addInvoker " + key + " is now " + methods.get(key));
+				}
+			} else {
+				if (log.isWarnEnabled()) {
+					log.warn("invoker with name " + key + " was NOT replaced when calling addInvoker");
+				}
 			}
 		}
 		if (log.isDebugEnabled()) {
@@ -186,7 +197,7 @@ public final class Registry  {
 		} else {
 			methods.put(key, new ProxyInvoker(key, invoker));
 		}
-		if (log.isDebugEnabled()) {
+		if (log.isInfoEnabled()) {
 			log.info("addOrReplaceInvoker " + key + " is now " + methods.get(key));
 		}
 	}
