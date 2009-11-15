@@ -45,7 +45,7 @@ import org.adligo.i.util.client.MapFactory;
  * @author scott
  *
  */
-public final class Registry  {
+public class Registry  {
 	private static final Log log = LogFactory.getLog(Registry.class);
 	/**
 	 * only print out errors about running from tests 
@@ -258,7 +258,7 @@ public final class Registry  {
 		checked.replaceCheckedInvokerDelegates(p);
 	}
 	
-	synchronized static void clear() {
+	protected synchronized static void clear() {
 		if (methods != null) {
 			methods.clear();
 		}
