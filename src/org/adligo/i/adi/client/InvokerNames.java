@@ -30,7 +30,7 @@ public class InvokerNames {
 	 * j2se and j2me systems (subsystems) should use this to obtain
 	 * configuraiton information.
 	 * 
-	 * It is preferrable to have the  END USER (admin NOT programmer) 
+	 * It is preferrable to have the END USER (admin NOT programmer) 
 	 * configuration information come from a place that they can easliy 
 	 * change it, common convetions seem to be
 	 * 
@@ -44,7 +44,8 @@ public class InvokerNames {
 	 * Also this invoker can be used as a proxy for runtime configurable 
 	 * information, so that a admin can change things at runtime
 	 * 
-	 * parameter ConfigRequest
+	 * parameter ConfigRequest or 
+	 * (J2EE container impl org.adligo.i.adi.server.I_HttpRpcContext<ConfigRequest> ) 
 	 * returns some NON MUTABLE Object that was configured
 	 *    
 	 */
