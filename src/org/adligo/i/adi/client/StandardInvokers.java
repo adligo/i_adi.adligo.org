@@ -15,6 +15,8 @@ public class StandardInvokers {
 		   new ProxyInvoker(InvokerNames.OUT, new SimpleSystemOut());
 	private static final ProxyInvoker CLOCK = 
 		   new ProxyInvoker(InvokerNames.CLOCK, new SimpleClock());
+	private static final ProxyInvoker I18N_CONSTANTS_FACTORY = 
+			new ProxyInvoker(InvokerNames.CONSTANTS_FACTORY, I18nConstantsFactory.INSTANCE);
 	
 	/**
 	 * can't even be done with a I_Map due to init issues
@@ -38,6 +40,9 @@ public class StandardInvokers {
 		}
 		if (InvokerNames.OUT.equals(name)) {
 			return OUT;
+		}
+		if (InvokerNames.CONSTANTS_FACTORY.equals(name)) {
+			return I18N_CONSTANTS_FACTORY;
 		}
 		return null;
 	}

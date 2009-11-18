@@ -1,25 +1,26 @@
 package org.adligo.i.adi.client;
 
 public class InvokerNames {
+	private static final String BASE = "org.adligo.i.adi.";
 	/**
 	 * these are the traditional constants of the cache reader and writer
 	 */
-	public static final String CACHE_READER = "org.adligo.i.adi.cache_reader";
-	public static final String CACHE_WRITER = "org.adligo.i.adi.cache_writer";
-	public static final String CACHE_REMOVER = "org.adligo.i.adi.cache_remover";
+	public static final String CACHE_READER = BASE + "cache_reader";
+	public static final String CACHE_WRITER = BASE + "cache_writer";
+	public static final String CACHE_REMOVER = BASE + "cache_remover";
 	
 	/**
 	 * returns something that returns System.currentTimeMillis()
 	 * stubbed out this way for unit tests of code which involve time
 	 */
-	public static final String CLOCK = "org.adligo.i.adi.clock";
+	public static final String CLOCK = BASE + "clock";
 	
 	/**
 	 * sends something to System.out
 	 * stubbed out this way for unit tests of code which involves 
 	 * printing to the console
 	 */
-	public static final String OUT = "org.adligo.i.adi.out";
+	public static final String OUT = BASE + "out";
 	
 	/**
 	 * 
@@ -49,5 +50,16 @@ public class InvokerNames {
 	 * returns some NON MUTABLE Object that was configured
 	 *    
 	 */
-	public static final String CONFIGURATION_PROVIDER = "org.adligo.i.adi.configuration_provider";
+	public static final String CONFIGURATION_PROVIDER = BASE + "configuration_provider";
+	
+	/**
+	 * This should provide a Interface from the interfaces name
+	 * for constants similar to;
+	 * http://google-web-toolkit.googlecode.com/svn/javadoc/1.5/com/google/gwt/i18n/client/Constants.html
+	 * 
+	 * Or on other platforms a concrete impl as shown by the (see models_core package)
+	 * I_UserValidationConstants
+	 * UserValidationEnglishConstants
+	 */
+	public static final String CONSTANTS_FACTORY = BASE + "constants_factory";
 }
