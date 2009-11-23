@@ -183,4 +183,12 @@ public class EventDelegator implements I_Listener {
 		}
 		listener.onEvent(p);
 	}
+	
+	public boolean canRoute(I_Event p) {
+		Object destination = eventMap.get(p.getSource());
+		if (destination == null) {
+			return false;
+		}
+		return true;
+	}
 }
