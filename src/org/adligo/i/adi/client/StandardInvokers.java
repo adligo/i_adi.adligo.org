@@ -13,6 +13,8 @@ public class StandardInvokers {
 				new BaseConfigProvider());
 	private static final ProxyInvoker OUT = 
 		   new ProxyInvoker(InvokerNames.OUT, new SimpleSystemOut());
+	private static final ProxyInvoker ERR = 
+		   new ProxyInvoker(InvokerNames.ERR, new SimpleSystemErr());
 	private static final ProxyInvoker CLOCK = 
 		   new ProxyInvoker(InvokerNames.CLOCK, new SimpleClock());
 	private static final ProxyInvoker I18N_CONSTANTS_FACTORY = 
@@ -40,6 +42,9 @@ public class StandardInvokers {
 		}
 		if (InvokerNames.OUT.equals(name)) {
 			return OUT;
+		}
+		if (InvokerNames.ERR.equals(name)) {
+			return ERR;
 		}
 		if (InvokerNames.CONSTANTS_FACTORY.equals(name)) {
 			return I18N_CONSTANTS_FACTORY;

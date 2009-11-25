@@ -21,6 +21,12 @@ public class InvokerNames {
 	 * printing to the console
 	 */
 	public static final String OUT = BASE + "out";
+	/**
+	 * sends something to System.err
+	 * stubbed out this way for unit tests of code which involves 
+	 * printing to the console
+	 */
+	public static final String ERR = BASE + "err";
 	
 	/**
 	 * 
