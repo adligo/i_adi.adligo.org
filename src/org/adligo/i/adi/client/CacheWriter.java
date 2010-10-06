@@ -10,7 +10,7 @@ public class CacheWriter implements I_Invoker {
 	private static I_Invoker CLOCK = Registry.getInvoker(InvokerNames.CLOCK);
 	protected static final CacheWriter INSTANCE = new CacheWriter();
 	
-	private CacheWriter() {}
+	protected CacheWriter() {}
 	
 	public Object invoke(Object valueObject) {
 		if (valueObject instanceof CacheWriterToken) {
