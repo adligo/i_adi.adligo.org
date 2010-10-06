@@ -4,7 +4,7 @@ import org.adligo.i.adi.client.models.CacheRemoverToken;
 import org.adligo.i.util.client.I_Iterator;
 
 public class CacheRemover implements I_Invoker {
-	protected static final CacheRemover INSTANCE = new CacheRemover();
+	public static final CacheRemover INSTANCE = new CacheRemover();
 	
 	private CacheRemover() {}
 	

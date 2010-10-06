@@ -13,7 +13,7 @@ public class CacheWriter implements I_Invoker {
 		return CLOCK;
 	}
 
-	protected static final CacheWriter INSTANCE = new CacheWriter();
+	public static final CacheWriter INSTANCE = new CacheWriter();
 	
 	private CacheWriter() {}
 	

@@ -37,5 +37,22 @@ public class Cache {
 	
 	private Cache() {};
 	
+	/**
+	 * for the CacheTest only do not use (use the Registry api)
+	 * @param key
+	 * @return
+	 */
+	public static Object getItem(String key) {
+		return items.get(key);
+	}
+
+	/**
+	 * for the CacheTest only do not use (use the Registry api)
+	 * @param key
+	 * @return
+	 */
+	public static Long getTime(String key) {
+		return (Long) itemsEditTimes.get(key);
+	}
 	
 }
