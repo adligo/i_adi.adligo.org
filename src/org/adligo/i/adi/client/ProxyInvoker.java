@@ -14,7 +14,7 @@ public class ProxyInvoker implements I_Invoker {
 		return getInstance(name, null);
 	}
 	
-	public static synchronized ProxyInvoker getInstance(
+	protected static synchronized ProxyInvoker getInstance(
 			String name, I_Invoker delegate) {
 		
 		if (log.isDebugEnabled()) {
@@ -75,7 +75,7 @@ public class ProxyInvoker implements I_Invoker {
 	
 	public synchronized void setDelegate(I_Invoker p) {
 		if (log.isDebugEnabled()) {
-			log.debug("getting invoker " + p + " for ProxyInvoker " + name);
+			log.debug("setting invoker " + p + " for ProxyInvoker " + name + " " + super.toString());
 		}
 		delegate = p;
 	}
@@ -88,7 +88,8 @@ public class ProxyInvoker implements I_Invoker {
 		if (delegate == null) {
 			RuntimeException e = new RuntimeException("Proxy isn't initalized yet for " + name + 
 					" please add one to your Adi Registry (or did you want a checked invoker ?) !");
-			log.error(e.getMessage(), e);
+			//super toString give us the object id
+			log.error(super.toString() + e.getMessage(), e);
 			throw e;
 		} else {
 			try {

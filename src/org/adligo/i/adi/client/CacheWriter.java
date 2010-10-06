@@ -7,7 +7,7 @@ import org.adligo.i.log.client.LogFactory;
 
 public class CacheWriter implements I_Invoker {
 	private static final Log log = LogFactory.getLog(CacheWriter.class);
-	private static final I_Invoker CLOCK = Registry.getInvoker(InvokerNames.CLOCK);
+	private static I_Invoker CLOCK = Registry.getInvoker(InvokerNames.CLOCK);
 	protected static final CacheWriter INSTANCE = new CacheWriter();
 	
 	private CacheWriter() {}
@@ -65,6 +65,19 @@ public class CacheWriter implements I_Invoker {
 			log.debug("cache is now " + token.getName() + " value " +
 					Cache.items.get(token.getName()));
 		}
+	}
+	
+	/**
+	 * was dealing with a wierd init loop that I couldn't figure out
+	 * seems to work ok 2+ times, but not in a large test run.
+	 * @todo figure out what was going wrong and fix for the 
+	 * unit tests so that CLOCK can be final
+	 * and this method can be removed
+	 * 
+	 * @param p
+	 */
+	protected static void setCLOCK(I_Invoker p) {
+		CLOCK = p;
 	}
 
 }
