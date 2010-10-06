@@ -1,7 +1,8 @@
 package org.adligo.i.adi.client;
 
 public class StandardInvokers {
-
+	private static final ProxyInvoker CLOCK = 
+		   new ProxyInvoker(InvokerNames.CLOCK, SimpleClock.INSTANCE);
 	private static final ProxyInvoker CACHE_READER = 
 		new ProxyInvoker(InvokerNames.CACHE_READER, CacheReader.INSTANCE);
 	private static final ProxyInvoker CACHE_WRITER = 
@@ -15,8 +16,7 @@ public class StandardInvokers {
 		   new ProxyInvoker(InvokerNames.OUT, SimpleSystemOut.INSTANCE);
 	private static final ProxyInvoker ERR = 
 		   new ProxyInvoker(InvokerNames.ERR, SimpleSystemErr.INSTANCE);
-	private static final ProxyInvoker CLOCK = 
-		   new ProxyInvoker(InvokerNames.CLOCK, SimpleClock.INSTANCE);
+
 	private static final ProxyInvoker I18N_CONSTANTS_FACTORY = 
 			new ProxyInvoker(InvokerNames.CONSTANTS_FACTORY, I18nConstantsFactory.INSTANCE);
 	

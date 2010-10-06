@@ -64,10 +64,8 @@ public class Registry  {
 	 * common init code for this class
 	 * 
 	 */
-	private static void init() { 
+	private static synchronized void init() { 
 		methods = MapFactory.create();
-		
-		
 		I_Iterator it = ProxyInvoker.getPreInitInvokers();
 		while (it.hasNext()) {
 			ProxyInvoker pi = (ProxyInvoker) it.next();
@@ -256,14 +254,6 @@ public class Registry  {
 	 */
 	public static synchronized void addOrReplaceCheckedInvokers(I_Map p ) {
 		checked.replaceCheckedInvokerDelegates(p);
-	}
-	
-	protected synchronized static void clear() {
-		if (methods != null) {
-			methods.clear();
-		}
-		ProxyInvoker.clearPreInitInvokers();
-		CheckedRegistry.clear();
 	}
 	
 	public static void debug() {
