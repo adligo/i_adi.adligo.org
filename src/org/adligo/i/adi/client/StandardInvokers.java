@@ -3,20 +3,20 @@ package org.adligo.i.adi.client;
 public class StandardInvokers {
 
 	private static final ProxyInvoker CACHE_READER = 
-		new ProxyInvoker(InvokerNames.CACHE_READER, new CacheReader());
+		new ProxyInvoker(InvokerNames.CACHE_READER, CacheReader.INSTANCE);
 	private static final ProxyInvoker CACHE_WRITER = 
-		new ProxyInvoker(InvokerNames.CACHE_WRITER, new CacheWriter());
+		new ProxyInvoker(InvokerNames.CACHE_WRITER, CacheWriter.INSTANCE);
 	private static final ProxyInvoker CACHE_REMOVER = 
-		new ProxyInvoker(InvokerNames.CACHE_REMOVER, new CacheRemover());
+		new ProxyInvoker(InvokerNames.CACHE_REMOVER, CacheRemover.INSTANCE);
 	private static final ProxyInvoker CONFIG_PROVIDER = 
 		new ProxyInvoker(InvokerNames.CONFIGURATION_PROVIDER,
 				new BaseConfigProvider());
 	private static final ProxyInvoker OUT = 
-		   new ProxyInvoker(InvokerNames.OUT, new SimpleSystemOut());
+		   new ProxyInvoker(InvokerNames.OUT, SimpleSystemOut.INSTANCE);
 	private static final ProxyInvoker ERR = 
-		   new ProxyInvoker(InvokerNames.ERR, new SimpleSystemErr());
+		   new ProxyInvoker(InvokerNames.ERR, SimpleSystemErr.INSTANCE);
 	private static final ProxyInvoker CLOCK = 
-		   new ProxyInvoker(InvokerNames.CLOCK, new SimpleClock());
+		   new ProxyInvoker(InvokerNames.CLOCK, SimpleClock.INSTANCE);
 	private static final ProxyInvoker I18N_CONSTANTS_FACTORY = 
 			new ProxyInvoker(InvokerNames.CONSTANTS_FACTORY, I18nConstantsFactory.INSTANCE);
 	
