@@ -19,7 +19,28 @@ public class CacheWriterToken {
 	private String name = "";
 	private Object value = new Object();
 	private short setPolicy = SET_ALWAYS;
-
+	/**
+	 * JCache
+	 * the number of seconds before the item may be
+	 * evicted from the cache (defaults to never)
+	 * 
+	 * GCacheFactory.EXPIRATION_DELTA
+	 * http://code.google.com/appengine/docs/java/memcache/usingjcache.html
+	 */
+	private Integer expiration_delta;
+	
+	/**
+	 * if provided should increment the cache value with name
+	 * @see com.google.appengine.api.memcache.MemcacheService#increment
+	 * 
+	 * MemcacheService
+	 * was added for JCache
+	 * For instance 1 as this value would give
+	 * 
+	 * 1,2,3,4,5 with repeating calls with the same CacheWriterToken
+	 */
+	private Integer increment_delta;
+	
 	
 	public String getName() {
 		return name;
@@ -39,4 +60,19 @@ public class CacheWriterToken {
 	public void setSetPolicy(short setPolicy) {
 		this.setPolicy = setPolicy;
 	}
+	
+	public Integer getExpiration_delta() {
+		return expiration_delta;
+	}
+	public void setExpiration_delta(Integer expirationDelta) {
+		expiration_delta = expirationDelta;
+	}
+
+	public Integer getIncrement_delta() {
+		return increment_delta;
+	}
+	public void setIncrement_delta(Integer incrementDelta) {
+		increment_delta = incrementDelta;
+	}
+	
 }
