@@ -1,7 +1,5 @@
 package org.adligo.i.adi.client;
 
-import java.security.InvalidParameterException;
-
 import org.adligo.i.adi.client.models.CacheWriterToken;
 import org.adligo.i.log.client.Log;
 import org.adligo.i.log.client.LogFactory;
@@ -24,7 +22,7 @@ public class CacheWriter implements I_Invoker {
 			CacheWriterToken token = (CacheWriterToken) valueObject;
 			return invoke(token);
 		} catch (ClassCastException x) {
-			throw new InvalidParameterException(
+			throw new IllegalArgumentException(
 					this.getClass().getName() + " takes a " +
 					CacheWriterToken.class.getName() + 
 					" and you passed it a " + valueObject);
@@ -54,7 +52,7 @@ public class CacheWriter implements I_Invoker {
 						return Boolean.FALSE;
 					}
 				default:
-					throw new RuntimeException("token type " + policy +
+					throw new IllegalArgumentException("token type " + policy +
 							" not currently supported");
 			}
 		} else {

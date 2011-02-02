@@ -1,6 +1,5 @@
 package org.adligo.i.adi.client;
 
-import java.security.InvalidParameterException;
 
 import org.adligo.i.adi.client.models.MemoryWriterToken;
 import org.adligo.i.util.client.StringUtils;
@@ -22,14 +21,14 @@ public class MemoryWriter implements I_Invoker {
 		try {
 			return invoke((MemoryWriterToken) token);
 		} catch (ClassCastException x) {
-			throw new InvalidParameterException(MEMORY_WRITER_REQUIRES_A_MEMORY_WRITER_TOKEN);
+			throw new IllegalArgumentException(MEMORY_WRITER_REQUIRES_A_MEMORY_WRITER_TOKEN);
 		}
 	}
 	
 	private Boolean invoke(MemoryWriterToken token) {
 		String key = token.getKey();
 		if (StringUtils.isEmpty(key)) {
-			throw new InvalidParameterException(MEMORY_WRITER_REQUIRES_A_NON_EMPTY_KEY);
+			throw new IllegalArgumentException(MEMORY_WRITER_REQUIRES_A_NON_EMPTY_KEY);
 		}
 		Object obj = token.getValue();
 		//object may be null if you want to remove it!
