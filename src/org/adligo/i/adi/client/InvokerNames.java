@@ -37,7 +37,7 @@ public class InvokerNames {
 	 * allows retrieval of objects long term memory
 	 * accepts a String returns a Object (client code must downcast)
 	 */
-	public static final String MEMORY_READER = BASE + "memory_writer";
+	public static final String MEMORY_READER = BASE + "memory_reader";
 	
 	/**
 	 * returns something that returns System.currentTimeMillis()

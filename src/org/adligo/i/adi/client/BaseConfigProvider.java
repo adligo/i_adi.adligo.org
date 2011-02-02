@@ -5,14 +5,17 @@ import org.adligo.i.adi.client.models.ConfigRequest;
 
 public class BaseConfigProvider implements I_Invoker {
 	
+	public static final String AND_WAS_PASSED = " and was passed ";
+	public static final String TAKES_A = " takes a ";
+
 	public Object invoke(Object valueObject) {
 		try {
 			return ((ConfigRequest) valueObject).getDefaultSetting();
 		} catch (ClassCastException x) {
 			IllegalArgumentException e = new IllegalArgumentException(
-					this.getClass().getName() + " takes a " +
+					this.getClass().getName() + TAKES_A +
 					ConfigRequest.class.getName() + 
-					" and you passed it a " + valueObject);
+					AND_WAS_PASSED + valueObject);
 			throw e;
 		}
 	}
