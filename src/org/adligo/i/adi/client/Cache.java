@@ -12,7 +12,7 @@ import org.adligo.i.util.client.MapFactory;
  * http://java-source.net/open-source/cache-solutions/jcache
  * 
  * however you may want to still use the Registry (GRegistry) 
- * and invokers (I_GInvokers) to wrap it in case you want to replace it in unit tests.
+ * and invokers (I_GInvokers) to wrap it (JCache) in case you want to replace it in unit tests.
  * 
  * note edits to the maps in this class should be synchronized on this class
  * @author scott

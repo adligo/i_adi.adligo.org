@@ -9,6 +9,12 @@ public class StandardInvokers {
 		new ProxyInvoker(InvokerNames.CACHE_WRITER, CacheWriter.INSTANCE);
 	private static final ProxyInvoker CACHE_REMOVER = 
 		new ProxyInvoker(InvokerNames.CACHE_REMOVER, CacheRemover.INSTANCE);
+
+	private static final ProxyInvoker MEMORY_READER = 
+		new ProxyInvoker(InvokerNames.MEMORY_READER, MemoryReader.INSTANCE);
+	private static final ProxyInvoker MEMORY_WRITER = 
+		new ProxyInvoker(InvokerNames.MEMORY_WRITER, MemoryWriter.INSTANCE);
+	
 	private static final ProxyInvoker CONFIG_PROVIDER = 
 		new ProxyInvoker(InvokerNames.CONFIGURATION_PROVIDER,
 				new BaseConfigProvider());
@@ -33,6 +39,12 @@ public class StandardInvokers {
 		}
 		if (InvokerNames.CACHE_REMOVER.equals(name)) {
 			return CACHE_REMOVER;
+		}
+		if (InvokerNames.MEMORY_READER.equals(name)) {
+			return MEMORY_READER;
+		}
+		if (InvokerNames.MEMORY_WRITER.equals(name)) {
+			return MEMORY_WRITER;
 		}
 		if (InvokerNames.CONFIGURATION_PROVIDER.equals(name)) {
 			return CONFIG_PROVIDER;

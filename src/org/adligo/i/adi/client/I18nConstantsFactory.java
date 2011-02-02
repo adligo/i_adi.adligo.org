@@ -20,11 +20,12 @@ public class I18nConstantsFactory implements I_Invoker {
 	
 	public Object invoke(Object valueObject) {
 		Object val = getMap().get(valueObject);
-		if (val instanceof I_Invoker) {
+		try {
 			return ((I_Invoker) val).invoke(valueObject);
-		}
-		if (val == null && defalutFactory != null) {
-			val = defalutFactory.invoke(valueObject);
+		} catch (ClassCastException x) {
+			if (val == null && defalutFactory != null) {
+				val = defalutFactory.invoke(valueObject);
+			}
 		}
 		return val;
 	}

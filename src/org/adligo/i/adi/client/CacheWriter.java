@@ -1,5 +1,7 @@
 package org.adligo.i.adi.client;
 
+import java.security.InvalidParameterException;
+
 import org.adligo.i.adi.client.models.CacheWriterToken;
 import org.adligo.i.log.client.Log;
 import org.adligo.i.log.client.LogFactory;
@@ -13,20 +15,19 @@ public class CacheWriter implements I_Invoker {
 		return CLOCK;
 	}
 
-	public static final CacheWriter INSTANCE = new CacheWriter();
+	protected static final CacheWriter INSTANCE = new CacheWriter();
 	
-	private CacheWriter() {}
+	protected CacheWriter() {}
 	
 	public Object invoke(Object valueObject) {
-		if (valueObject instanceof CacheWriterToken) {
+		try  {
 			CacheWriterToken token = (CacheWriterToken) valueObject;
 			return invoke(token);
-		} else {
-			RuntimeException e = new RuntimeException(
+		} catch (ClassCastException x) {
+			throw new InvalidParameterException(
 					this.getClass().getName() + " takes a " +
 					CacheWriterToken.class.getName() + 
 					" and you passed it a " + valueObject);
-			throw e;
 		}
 		
 	}

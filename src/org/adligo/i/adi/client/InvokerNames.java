@@ -28,6 +28,18 @@ public class InvokerNames {
 	public static final String CACHE_REMOVER = BASE + "cache_remover";
 	
 	/**
+	 * allows manipulation (set, update, removal) of long term memory
+	 * accepts a MemoryWriterToken returns a boolean
+	 */
+	public static final String MEMORY_WRITER = BASE + "memory_writer";
+	
+	/**
+	 * allows retrieval of objects long term memory
+	 * accepts a String returns a Object (client code must downcast)
+	 */
+	public static final String MEMORY_READER = BASE + "memory_writer";
+	
+	/**
 	 * returns something that returns System.currentTimeMillis()
 	 * stubbed out this way for unit tests of code which involve time
 	 * accepts anything (Object) input has no effect

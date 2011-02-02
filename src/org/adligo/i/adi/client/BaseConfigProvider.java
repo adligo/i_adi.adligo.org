@@ -1,15 +1,17 @@
 package org.adligo.i.adi.client;
 
+import java.security.InvalidParameterException;
+
 import org.adligo.i.adi.client.models.ConfigRequest;
 
 
 public class BaseConfigProvider implements I_Invoker {
 	
 	public Object invoke(Object valueObject) {
-		if (valueObject instanceof ConfigRequest) {
+		try {
 			return ((ConfigRequest) valueObject).getDefaultSetting();
-		} else {
-			RuntimeException e = new RuntimeException(
+		} catch (ClassCastException x) {
+			InvalidParameterException e = new InvalidParameterException(
 					this.getClass().getName() + " takes a " +
 					ConfigRequest.class.getName() + 
 					" and you passed it a " + valueObject);
