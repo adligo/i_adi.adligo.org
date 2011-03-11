@@ -1,20 +1,13 @@
-package org.adligo.i.adi.client;
+package org.adligo.i.adi.client.light;
 
 import org.adligo.i.util.client.I_Map;
 import org.adligo.i.util.client.MapFactory;
 
 /**
- * DO NOT USE ON THE SERVER!
  * 
- * this is a simplified JCache 
- * for jme and gwt (actual javascript portion), if your running on a server
- * you want JCache
- * http://java-source.net/open-source/cache-solutions/jcache
+ * this is a simplified Cache 
+ * for jme and gwt (actual javascript portion)
  * 
- * however you may want to still use the Registry (GRegistry) 
- * and invokers (I_GInvokers) to wrap it (JCache) in case you want to replace it in unit tests.
- * 
- * note edits to the maps in this class should be synchronized on this class
  * @author scott
  *
  */
@@ -28,12 +21,12 @@ public class Cache {
 	 *  <String>,<Object>
 	 *  
 	 */
-	protected static final I_Map items = MapFactory.create();
+	protected static final I_Map items = MapFactory.createSync();
 	/**
 	 * this contains the times that the cache was edited for each key
 	 * <String>,<Long>
 	 */
-	protected static final I_Map itemsEditTimes = MapFactory.create();
+	protected static final I_Map itemsEditTimes = MapFactory.createSync();
 	
 	private Cache() {};
 	

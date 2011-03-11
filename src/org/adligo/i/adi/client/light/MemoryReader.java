@@ -1,4 +1,6 @@
-package org.adligo.i.adi.client;
+package org.adligo.i.adi.client.light;
+
+import org.adligo.i.adi.client.I_Invoker;
 
 /**
  * @see Memory
@@ -6,7 +8,7 @@ package org.adligo.i.adi.client;
  *
  */
 public class MemoryReader implements I_Invoker {
-	protected static final MemoryReader INSTANCE = new MemoryReader();
+	public static final MemoryReader INSTANCE = new MemoryReader();
 	
 	protected MemoryReader() {}
 	

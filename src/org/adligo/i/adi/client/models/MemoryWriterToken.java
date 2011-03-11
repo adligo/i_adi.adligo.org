@@ -1,6 +1,6 @@
 package org.adligo.i.adi.client.models;
 
-import org.adligo.i.adi.client.Memory;
+import org.adligo.i.adi.client.light.Memory;
 
 /**
  * class to edit long term memory

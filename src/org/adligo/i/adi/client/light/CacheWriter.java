@@ -1,5 +1,8 @@
-package org.adligo.i.adi.client;
+package org.adligo.i.adi.client.light;
 
+import org.adligo.i.adi.client.I_Invoker;
+import org.adligo.i.adi.client.InvokerNames;
+import org.adligo.i.adi.client.Registry;
 import org.adligo.i.adi.client.models.CacheWriterToken;
 import org.adligo.i.log.client.Log;
 import org.adligo.i.log.client.LogFactory;
@@ -13,7 +16,7 @@ public class CacheWriter implements I_Invoker {
 		return CLOCK;
 	}
 
-	protected static final CacheWriter INSTANCE = new CacheWriter();
+	public static final CacheWriter INSTANCE = new CacheWriter();
 	
 	protected CacheWriter() {}
 	
@@ -61,11 +64,9 @@ public class CacheWriter implements I_Invoker {
 	}
 
 	protected void set(CacheWriterToken token) {
-		synchronized (Cache.class) {
-			Cache.items.put(token.getName(), token.getValue());
-			Long time = (Long) CLOCK.invoke(null);
-			Cache.itemsEditTimes.put(token.getName(), time);
-		}
+		Cache.items.put(token.getName(), token.getValue());
+		Long time = (Long) CLOCK.invoke(null);
+		Cache.itemsEditTimes.put(token.getName(), time);
 		if (log.isDebugEnabled()) {
 			log.debug("cache is now " + token.getName() + " value " +
 					Cache.items.get(token.getName()));
