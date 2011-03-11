@@ -26,7 +26,7 @@ public class CacheRemover implements I_Invoker {
 					}
 				break;
 			case CacheRemoverToken.SWEEP_ALL_TYPE:
-				I_Iterator itKeys = Cache.itemsEditTimes.keys();
+				I_Iterator itKeys = Cache.itemsEditTimes.getKeysIterator();
 				String key = (String) itKeys.next();
 				Long time = (Long) Cache.itemsEditTimes.get(key);
 				if (time != null) {

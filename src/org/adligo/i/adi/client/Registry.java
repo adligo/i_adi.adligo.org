@@ -142,7 +142,7 @@ public class Registry  {
 		if (methods == null) {
 			init();
 		}
-		I_Iterator it = p.getIterator();
+		I_Iterator it = p.getKeysIterator();
 		while (it.hasNext()) {
 			String key = (String) it.next();
 			I_Invoker invoker = (I_Invoker) p.get(key);
@@ -223,7 +223,7 @@ public class Registry  {
 		if (methods == null) {
 			init();
 		}
-		I_Iterator it = p.getIterator();
+		I_Iterator it = p.getKeysIterator();
 		while (it.hasNext()) {
 			String key = (String) it.next();
 			I_Invoker value = (I_Invoker) p.get(key);
@@ -260,7 +260,7 @@ public class Registry  {
 		if (log.isDebugEnabled()) {
 			log.debug("Methods:\n");
 			if (methods != null) {
-				I_Iterator it = methods.keys();
+				I_Iterator it = methods.getKeysIterator();
 				while (it.hasNext()) {
 					Object obj = it.next();
 					log.debug(obj);

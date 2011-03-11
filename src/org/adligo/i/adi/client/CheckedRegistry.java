@@ -81,7 +81,7 @@ public class CheckedRegistry {
 		if (checkedMethods == null) {
 			init();
 		}
-		I_Iterator it = p.getIterator();
+		I_Iterator it = p.getKeysIterator();
 		while (it.hasNext()) {
 			String key = (String) it.next();
 			addCheckedInvoker(key, (I_CheckedInvoker) p.get(key));
@@ -119,7 +119,7 @@ public class CheckedRegistry {
 		if (checkedMethods == null) {
 			init();
 		}
-		I_Iterator it = p.getIterator();
+		I_Iterator it = p.getKeysIterator();
 		while (it.hasNext()) {
 			String key = (String) it.next();
 			I_CheckedInvoker value = (I_CheckedInvoker) p.get(key); 
@@ -153,7 +153,7 @@ public class CheckedRegistry {
 	
 	void debug() {
 		if (checkedMethods != null) {
-			I_Iterator it2 = checkedMethods.keys();
+			I_Iterator it2 = checkedMethods.getKeysIterator();
 			while (it2.hasNext()) {
 				Object obj = it2.next();
 				log.debug(obj);
