@@ -6,8 +6,6 @@ import org.adligo.i.adi.client.light.CacheWriter;
 import org.adligo.i.adi.client.light.MemoryReader;
 import org.adligo.i.adi.client.light.MemoryWriter;
 
-import com.google.gwt.junit.Platform;
-
 public class LightStandardInvokers {
 	private static final ProxyInvoker CACHE_READER = 
 		new ProxyInvoker(InvokerNames.CACHE_READER, CacheReader.INSTANCE);
