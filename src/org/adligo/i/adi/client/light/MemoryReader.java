@@ -11,7 +11,7 @@ import org.adligo.i.adi.client.models.MemoryValue;
 public final class MemoryReader implements I_Invoker {
 	static final MemoryReader INSTANCE = new MemoryReader();
 	
-	protected MemoryReader() {}
+	private MemoryReader() {}
 	
 	public Object invoke(Object key) {
 		MemoryValue value = (MemoryValue) Memory.items.get(key);

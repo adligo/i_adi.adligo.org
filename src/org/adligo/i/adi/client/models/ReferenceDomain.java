@@ -149,6 +149,15 @@ public class ReferenceDomain {
 		}
 	}
 	
+	/**
+	 * special api for the time index
+	 * to remove a whole chunck at once
+	 * @param parentFullPath
+	 */
+	public synchronized void removeChildMap(String parentFullPath) {
+		map.remove(parentFullPath);
+	}
+	
 	public I_Iterator topKeys() {
 		return map.getKeysIterator();
 	}
@@ -159,5 +168,23 @@ public class ReferenceDomain {
 			return new ArrayIterator(new Object[]{});
 		}
 		return local.getKeysIterator();
+	}
+	
+	public I_Iterator subValues(String p) {
+		I_Map local = (I_Map) map.get(p);
+		if (local == null) {
+			return new ArrayIterator(new Object[]{});
+		}
+		return local.getValuesIterator();
+	}
+	
+	public int size() {
+		int size = 0;
+		I_Iterator it = map.getValuesIterator();
+		while (it.hasNext()) {
+			I_Map item = (I_Map) it.next();
+			size = size + item.size();
+		}
+		return size;
 	}
 }

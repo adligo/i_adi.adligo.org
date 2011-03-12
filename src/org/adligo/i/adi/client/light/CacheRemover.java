@@ -15,7 +15,7 @@ public final class CacheRemover implements I_Invoker {
 		return invoke(token);
 	}
 
-	protected Boolean invoke(CacheRemoverToken token) {
+	protected Integer invoke(CacheRemoverToken token) {
 		switch (token.getType()) {
 			case CacheRemoverToken.REMOVE_LIST_TYPE:
 					I_Iterator it = token.getKeys();
@@ -37,10 +37,14 @@ public final class CacheRemover implements I_Invoker {
 				}
 				
 				break;
+			case CacheRemoverToken.GET_SIZE_TYPE:
+					return new Integer(Cache.items.size());
+			case CacheRemoverToken.GET_TIME_INDEX_SIZE_TYPE:
+				return new Integer(Cache.items.size());
 			default:
 				throw new RuntimeException("token type " + token.getType() + " not currently supported");
 		}
-		return Boolean.TRUE;
+		return new Integer(1);
 	}
 
 }

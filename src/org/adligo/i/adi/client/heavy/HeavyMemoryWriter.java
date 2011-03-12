@@ -11,7 +11,7 @@ import org.adligo.i.util.client.StringUtils;
  * @author scott
  *
  */
-public class HeavyMemoryWriter implements I_Invoker {
+public final class HeavyMemoryWriter implements I_Invoker {
 	public static final String ONLY_THE_OWNER_OF_A_MEMORY_VALUE_IS_ALLOWED_TO_MODIFY_IT = "Only the owner of a MemoryValue is allowed to modify it.";
 	public static final String MEMORY_WRITER_REQUIRES_A_MEMORY_WRITER_TOKEN = 
 						"MemoryWriter requires a " + MemoryWriterToken.class.getName() + " and was passed ";
@@ -19,9 +19,9 @@ public class HeavyMemoryWriter implements I_Invoker {
 		MEMORY_WRITER_REQUIRES_A_MEMORY_WRITER_TOKEN + " and was passed null.";
 	public static final String MEMORY_WRITER_REQUIRES_A_NON_EMPTY_KEY = "MemoryWriter requires a non empty key.";
 	
-	public static final HeavyMemoryWriter INSTANCE = new HeavyMemoryWriter();
+	static final HeavyMemoryWriter INSTANCE = new HeavyMemoryWriter();
 	
-	protected HeavyMemoryWriter() {}
+	private HeavyMemoryWriter() {}
 	
 	public Object invoke(Object token) {
 		try {

@@ -14,6 +14,16 @@ public class CacheRemoverToken {
 	 * removes all items from the list
 	 */
 	public static final short REMOVE_LIST_TYPE =1;
+	/**
+	 * allows the CacheRemover to return the size of items
+	 * in the Cache (for JUnit tests mostly)
+	 */
+	public static final short GET_SIZE_TYPE = 2;
+	/**
+	 * allows the CacheRemover to return the size of items
+	 * in the Cache (for JUnit tests mostly)
+	 */
+	public static final short GET_TIME_INDEX_SIZE_TYPE = 3;
 	
 	private short type = REMOVE_LIST_TYPE;
 	private I_Collection keys = CollectionFactory.create();

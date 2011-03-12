@@ -6,16 +6,16 @@ import org.adligo.i.adi.client.models.CacheValue;
 import org.adligo.i.util.client.I_Iterator;
 
 public class HeavyCacheRemover implements I_Invoker {
-	public static final HeavyCacheRemover INSTANCE = new HeavyCacheRemover();
+	static final HeavyCacheRemover INSTANCE = new HeavyCacheRemover();
 	
-	protected HeavyCacheRemover() {}
+	private HeavyCacheRemover() {}
 	
 	public Object invoke(Object valueObject) {
 		CacheRemoverToken token = (CacheRemoverToken) valueObject;
 		return invoke(token);
 	}
 
-	protected Boolean invoke(CacheRemoverToken token) {
+	protected Integer invoke(CacheRemoverToken token) {
 		switch (token.getType()) {
 			case CacheRemoverToken.REMOVE_LIST_TYPE:
 					I_Iterator it = token.getKeys();
@@ -34,42 +34,46 @@ public class HeavyCacheRemover implements I_Invoker {
 					long keyMin = cv.getTopTimeFromCrunchString(key);
 					
 					if (keyMin < reqMin) {
-						I_Iterator subKeyIt = HeavyCache.timeIndex.subKeys(key);
-						while (subKeyIt.hasNext()) {
-							String toRemoveKey = getTotalToRemoveKey(key,subKeyIt);
-							CacheValue toRemove = (CacheValue) HeavyCache.timeIndex.get(toRemoveKey);
-							if (toRemove != null) {
-								HeavyCache.items.remove(toRemove.getFullPath());
-								HeavyCache.timeIndex.remove(toRemove.getTimeCrunchString());
-							}
+						I_Iterator subValueIt = HeavyCache.timeIndex.subValues(key);
+						HeavyCache.timeIndex.removeChildMap(key);
+						while (subValueIt.hasNext()) {
+							CacheValue toRemove = (CacheValue) subValueIt.next();
+							checkRemoveByTime(staleTime, toRemove);
 						}
 					} else if (keyMin == reqMin) {
-						I_Iterator subKeyIt = HeavyCache.timeIndex.subKeys(key);
-						while (subKeyIt.hasNext()) {
-							String toRemoveKey = getTotalToRemoveKey(key,subKeyIt);
-							CacheValue toRemove = (CacheValue) HeavyCache.timeIndex.get(toRemoveKey);
-							if (toRemove != null) {
-								if (toRemove.getPutTime() <= staleTime) {
-									HeavyCache.items.remove(toRemove.getFullPath());
-									HeavyCache.timeIndex.remove(toRemove.getTimeCrunchString());
-								}
-							}
+						I_Iterator subValueIt = HeavyCache.timeIndex.subValues(key);
+						while (subValueIt.hasNext()) {
+							CacheValue toRemove = (CacheValue) subValueIt.next();
+							checkRemoveByTime(staleTime, toRemove);
 						}
 					}
 				}
 				break;
+			case CacheRemoverToken.GET_SIZE_TYPE:
+				return new Integer(HeavyCache.items.size());
+			case CacheRemoverToken.GET_TIME_INDEX_SIZE_TYPE:
+				return new Integer(HeavyCache.timeIndex.size());
 			default:
 				throw new RuntimeException("token type " + token.getType() + " not currently supported");
 		}
-		return Boolean.TRUE;
+		return new Integer(1);
 	}
 
-	private String getTotalToRemoveKey(String key, I_Iterator subKeyIt) {
-		String toRemoveKey = (String) subKeyIt.next();
-		StringBuffer sb = new StringBuffer();
-		sb.append(key);
-		sb.append(toRemoveKey);
-		return sb.toString();
+	private void checkRemoveByTime(long staleTime, CacheValue toRemove) {
+		if (toRemove != null) {
+			String fullPath = toRemove.getFullPath();
+			CacheValue val = (CacheValue) HeavyCache.items.get(fullPath);
+			if (val == null) {
+				//it was already removed
+			} else {
+				//another thread may have written to this
+				// reference name address since it's initial insert
+				if (val.getPutTime() <= staleTime) {
+					HeavyCache.items.remove(toRemove.getFullPath());
+				}
+			}
+		}
 	}
+
 
 }

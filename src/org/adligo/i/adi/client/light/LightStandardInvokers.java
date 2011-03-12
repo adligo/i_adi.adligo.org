@@ -60,16 +60,16 @@ public class LightStandardInvokers {
 	 */
 	public void useLightWeightInvokers() {
 		Registry.addOrReplaceInvoker(
-				InvokerNames.CACHE_READER, CACHE_READER);
+				InvokerNames.CACHE_READER, CacheReader.INSTANCE);
 		Registry.addOrReplaceInvoker(
-				InvokerNames.CACHE_WRITER, CACHE_WRITER);
+				InvokerNames.CACHE_WRITER, CacheWriter.INSTANCE);
 		Registry.addOrReplaceInvoker(
-				InvokerNames.CACHE_REMOVER, CACHE_REMOVER);
+				InvokerNames.CACHE_REMOVER, CacheRemover.INSTANCE);
 		
 		Registry.addOrReplaceInvoker(
-				InvokerNames.MEMORY_READER, MEMORY_READER);
+				InvokerNames.MEMORY_READER, MemoryReader.INSTANCE);
 		Registry.addOrReplaceInvoker(
-				InvokerNames.MEMORY_WRITER, MEMORY_WRITER);
+				InvokerNames.MEMORY_WRITER, MemoryReader.INSTANCE);
 		
 		StandardInvokers.lockStandardInvokers();
 		

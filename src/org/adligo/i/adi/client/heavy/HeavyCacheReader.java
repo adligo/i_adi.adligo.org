@@ -6,9 +6,9 @@ import org.adligo.i.adi.client.models.CacheValue;
 
 
 public class HeavyCacheReader implements I_Invoker {
-	public static final HeavyCacheReader INSTANCE = new HeavyCacheReader();
+	static final HeavyCacheReader INSTANCE = new HeavyCacheReader();
 	
-	protected HeavyCacheReader() {}
+	private HeavyCacheReader() {}
 	
 	public Object invoke(Object key) {
 		CacheValue cv = (CacheValue) HeavyCache.items.get(key);

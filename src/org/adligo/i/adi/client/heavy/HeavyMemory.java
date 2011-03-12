@@ -20,7 +20,7 @@ import org.adligo.i.adi.client.models.ReferenceDomain;
  * @author scott
  *
  */
-public class HeavyMemory {
+public final class HeavyMemory {
 	/**
 	 * The key should use a pathlike structure
 	 *  /package/name
@@ -29,16 +29,7 @@ public class HeavyMemory {
 	 *  <String>,<Object>
 	 *  
 	 */
-	protected static final ReferenceDomain items = new ReferenceDomain();
+	static final ReferenceDomain items = new ReferenceDomain();
 
 	private HeavyMemory() {};
-	
-	/**
-	 * for the CacheTest only do not use (use the Registry api)
-	 * @param key
-	 * @return
-	 */
-	public static Object getItem(String key) {
-		return items.get(key);
-	}
 }

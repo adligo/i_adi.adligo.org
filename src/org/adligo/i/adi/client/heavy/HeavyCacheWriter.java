@@ -12,9 +12,9 @@ import org.adligo.i.log.client.LogFactory;
 public class HeavyCacheWriter implements I_Invoker {
 	private static final Log log = LogFactory.getLog(HeavyCacheWriter.class);
 	private static I_Invoker CLOCK = Registry.getInvoker(InvokerNames.CLOCK);
-	public static final HeavyCacheWriter INSTANCE = new HeavyCacheWriter();
+	static final HeavyCacheWriter INSTANCE = new HeavyCacheWriter();
 	
-	protected HeavyCacheWriter() {}
+	private HeavyCacheWriter() {}
 	
 	public Object invoke(Object valueObject) {
 		try  {

@@ -8,10 +8,10 @@ import org.adligo.i.adi.client.models.MemoryValue;
  * @author scott
  *
  */
-public class HeavyMemoryReader implements I_Invoker {
-	public static final HeavyMemoryReader INSTANCE = new HeavyMemoryReader();
+public final class HeavyMemoryReader implements I_Invoker {
+	static final HeavyMemoryReader INSTANCE = new HeavyMemoryReader();
 	
-	protected HeavyMemoryReader() {}
+	private HeavyMemoryReader() {}
 	
 	public Object invoke(Object key) {
 		MemoryValue value = (MemoryValue) HeavyMemory.items.get(key);
