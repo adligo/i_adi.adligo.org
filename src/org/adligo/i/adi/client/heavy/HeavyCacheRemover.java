@@ -44,7 +44,9 @@ public class HeavyCacheRemover implements I_Invoker {
 						I_Iterator subValueIt = HeavyCache.timeIndex.subValues(key);
 						while (subValueIt.hasNext()) {
 							CacheValue toRemove = (CacheValue) subValueIt.next();
-							checkRemoveByTime(staleTime, toRemove);
+							if (checkRemoveByTime(staleTime, toRemove)) {
+								HeavyCache.timeIndex.remove(toRemove.getFullPath());
+							}
 						}
 					}
 				}
@@ -59,20 +61,29 @@ public class HeavyCacheRemover implements I_Invoker {
 		return new Integer(1);
 	}
 
-	private void checkRemoveByTime(long staleTime, CacheValue toRemove) {
+	/**
+	 * @param staleTime
+	 * @param toRemove
+	 * @return true if this method removed it
+	 *    or if it was already removed
+	 */
+	private boolean checkRemoveByTime(long staleTime, CacheValue toRemove) {
 		if (toRemove != null) {
 			String fullPath = toRemove.getFullPath();
 			CacheValue val = (CacheValue) HeavyCache.items.get(fullPath);
 			if (val == null) {
 				//it was already removed
+				return true;
 			} else {
 				//another thread may have written to this
 				// reference name address since it's initial insert
 				if (val.getPutTime() <= staleTime) {
 					HeavyCache.items.remove(toRemove.getFullPath());
+					return true;
 				}
 			}
 		}
+		return false;
 	}
 
 
