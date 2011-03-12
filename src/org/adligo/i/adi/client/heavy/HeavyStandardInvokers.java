@@ -1,10 +1,7 @@
-package org.adligo.i.adi.client;
+package org.adligo.i.adi.client.heavy;
 
-import org.adligo.i.adi.client.heavy.HeavyCacheReader;
-import org.adligo.i.adi.client.heavy.HeavyCacheRemover;
-import org.adligo.i.adi.client.heavy.HeavyCacheWriter;
-import org.adligo.i.adi.client.heavy.HeavyMemoryReader;
-import org.adligo.i.adi.client.heavy.HeavyMemoryWriter;
+import org.adligo.i.adi.client.InvokerNames;
+import org.adligo.i.adi.client.ProxyInvoker;
 
 /**
  * the heavy standard invokers are optimized for JEE (Java Enterprise Edition)

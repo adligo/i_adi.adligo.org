@@ -1,10 +1,9 @@
-package org.adligo.i.adi.client;
+package org.adligo.i.adi.client.light;
 
-import org.adligo.i.adi.client.light.CacheReader;
-import org.adligo.i.adi.client.light.CacheRemover;
-import org.adligo.i.adi.client.light.CacheWriter;
-import org.adligo.i.adi.client.light.MemoryReader;
-import org.adligo.i.adi.client.light.MemoryWriter;
+import org.adligo.i.adi.client.InvokerNames;
+import org.adligo.i.adi.client.ProxyInvoker;
+import org.adligo.i.adi.client.Registry;
+import org.adligo.i.adi.client.StandardInvokers;
 
 /**
  * the light standard invokers are lightweight
@@ -27,6 +26,12 @@ public class LightStandardInvokers {
 	private static final ProxyInvoker MEMORY_WRITER = 
 		new ProxyInvoker(InvokerNames.MEMORY_WRITER, MemoryWriter.INSTANCE);
 	
+	/**
+	 * this method is not to be used other than for junit tests
+	 * and internal adi package code
+	 * @param name
+	 * @return
+	 */
 	public static final ProxyInvoker get(String name) {
 		if (InvokerNames.CACHE_READER.equals(name)) {
 			return CACHE_READER;
@@ -45,4 +50,29 @@ public class LightStandardInvokers {
 		}
 		return null;
 	}
+	
+	/**
+	 * this method should be used when initalizeing 
+	 * a light weight JSE command line or small applet
+	 * that doesn't want the heavy Cache and Memory impl
+	 * before locking it.
+	 *   It also locks all the standard invokers
+	 */
+	public void useLightWeightInvokers() {
+		Registry.addOrReplaceInvoker(
+				InvokerNames.CACHE_READER, CACHE_READER);
+		Registry.addOrReplaceInvoker(
+				InvokerNames.CACHE_WRITER, CACHE_WRITER);
+		Registry.addOrReplaceInvoker(
+				InvokerNames.CACHE_REMOVER, CACHE_REMOVER);
+		
+		Registry.addOrReplaceInvoker(
+				InvokerNames.MEMORY_READER, MEMORY_READER);
+		Registry.addOrReplaceInvoker(
+				InvokerNames.MEMORY_WRITER, MEMORY_WRITER);
+		
+		StandardInvokers.lockStandardInvokers();
+		
+	}
+
 }

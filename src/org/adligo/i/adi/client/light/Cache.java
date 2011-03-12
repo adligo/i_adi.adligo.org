@@ -21,7 +21,7 @@ public class Cache {
 	 *  <String>,<Object>
 	 *  
 	 */
-	protected static final I_Map items = MapFactory.createSync();
+	protected static final I_Map items = MapFactory.create();
 	/**
 	 * this contains the times that the cache was edited for each key
 	 * <String>,<Long>

@@ -60,7 +60,7 @@ public class ProxyInvoker implements I_Invoker {
 	 */
 	private boolean locked = false;
 	
-	ProxyInvoker(String name) {
+	public ProxyInvoker(String name) {
 		if (name == null) {
 			Exception e = new NullPointerException();
 			log.error("Null ProxyInvoker Name!", e);
@@ -68,7 +68,7 @@ public class ProxyInvoker implements I_Invoker {
 		this.name = name;
 	}
 	
-	ProxyInvoker(String name, I_Invoker p) {
+	public ProxyInvoker(String name, I_Invoker p) {
 		this(name);
 		delegate = p;
 	}

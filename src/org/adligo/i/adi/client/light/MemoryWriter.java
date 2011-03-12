@@ -11,7 +11,7 @@ import org.adligo.i.util.client.StringUtils;
  * @author scott
  *
  */
-public class MemoryWriter implements I_Invoker {
+public final class MemoryWriter implements I_Invoker {
 	public static final String ONLY_THE_OWNER_OF_A_MEMORY_VALUE_IS_ALLOWED_TO_MODIFY_IT = "Only the owner of a MemoryValue is allowed to modify it.";
 	
 	public static final String MEMORY_WRITER_REQUIRES_A_MEMORY_WRITER_TOKEN = 
@@ -19,9 +19,9 @@ public class MemoryWriter implements I_Invoker {
 	public static final String MEMORY_WRITER_REQUIRES_A_MEMORY_WRITER_TOKEN_AND_WAS_NULL =
 		MEMORY_WRITER_REQUIRES_A_MEMORY_WRITER_TOKEN + " and was passed null.";
 	public static final String MEMORY_WRITER_REQUIRES_A_NON_EMPTY_KEY = "MemoryWriter requires a non empty key.";
-	public static final MemoryWriter INSTANCE = new MemoryWriter();
+	static final MemoryWriter INSTANCE = new MemoryWriter();
 	
-	protected MemoryWriter() {}
+	private MemoryWriter() {}
 	
 	public Object invoke(Object token) {
 		try {
@@ -56,7 +56,7 @@ public class MemoryWriter implements I_Invoker {
 			if (currentOwner == null) {
 				set(key, obj, newOwner);
 			} else {
-				if (currentOwner.equals(newOwner)) {
+				if (currentOwner == newOwner) {
 					set(key, obj, newOwner);
 				} else {
 					throw new IllegalArgumentException(ONLY_THE_OWNER_OF_A_MEMORY_VALUE_IS_ALLOWED_TO_MODIFY_IT + token);

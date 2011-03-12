@@ -8,8 +8,8 @@ import org.adligo.i.adi.client.models.MemoryValue;
  * @author scott
  *
  */
-public class MemoryReader implements I_Invoker {
-	public static final MemoryReader INSTANCE = new MemoryReader();
+public final class MemoryReader implements I_Invoker {
+	static final MemoryReader INSTANCE = new MemoryReader();
 	
 	protected MemoryReader() {}
 	

@@ -1,8 +1,10 @@
 package org.adligo.i.adi.client;
 
+import org.adligo.i.adi.client.heavy.HeavyStandardInvokers;
 import org.adligo.i.adi.client.light.CacheReader;
 import org.adligo.i.adi.client.light.CacheRemover;
 import org.adligo.i.adi.client.light.CacheWriter;
+import org.adligo.i.adi.client.light.LightStandardInvokers;
 import org.adligo.i.adi.client.light.MemoryReader;
 import org.adligo.i.adi.client.light.MemoryWriter;
 import org.adligo.i.util.client.Platform;
@@ -55,5 +57,21 @@ public class StandardInvokers {
 			return I18N_CONSTANTS_FACTORY;
 		}
 		return null;
+	}
+	
+	/**
+	 * this method should be called to lock 
+	 * all of the standard invokers
+	 */
+	public static void lockStandardInvokers() {
+		Registry.lockInvoker(InvokerNames.CACHE_READER);
+		Registry.lockInvoker(InvokerNames.CACHE_WRITER);
+		Registry.lockInvoker(InvokerNames.CACHE_REMOVER);
+		Registry.lockInvoker(InvokerNames.MEMORY_READER);
+		Registry.lockInvoker(InvokerNames.MEMORY_WRITER);
+		
+		Registry.lockInvoker(InvokerNames.CLOCK);
+		Registry.lockInvoker(InvokerNames.CONFIGURATION_PROVIDER);
+		Registry.lockInvoker(InvokerNames.CONSTANTS_FACTORY);
 	}
 }

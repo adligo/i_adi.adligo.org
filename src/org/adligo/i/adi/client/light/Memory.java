@@ -18,7 +18,7 @@ import org.adligo.i.util.client.MapFactory;
  * @author scott
  *
  */
-public class Memory {
+public final class Memory {
 	/**
 	 * The key should use a pathlike structure
 	 *  /package/name
@@ -27,16 +27,8 @@ public class Memory {
 	 *  <String>,<MemoryValue>
 	 *  
 	 */
-	protected static final I_Map items = MapFactory.create();
+	 static final I_Map items = MapFactory.create();
 
 	private Memory() {};
-	
-	/**
-	 * for the CacheTest only do not use (use the Registry api)
-	 * @param key
-	 * @return
-	 */
-	public static Object getItem(String key) {
-		return items.get(key);
-	}
+
 }
