@@ -28,7 +28,10 @@ public class StandardInvokers {
 	 */
 	public static final ProxyInvoker get(String name) {
 		if (Platform.getPlatform() == Platform.JSE) {
-			
+			ProxyInvoker toRet = HeavyStandardInvokers.get(name);
+			if (toRet != null) {
+				return toRet;
+			}
 		} else {
 			ProxyInvoker toRet = LightStandardInvokers.get(name);
 			if (toRet != null) {

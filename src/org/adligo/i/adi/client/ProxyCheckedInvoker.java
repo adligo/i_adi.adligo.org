@@ -34,7 +34,11 @@ public class ProxyCheckedInvoker implements I_CheckedInvoker {
 	 */
 	private String name;
 	private I_CheckedInvoker delegate;
-
+	/**
+	 * lock a proxy so that it is no longer mutable
+	 */
+	private boolean locked = false;
+	
 	ProxyCheckedInvoker(String name) {
 		if (name == null) {
 			Exception e = new NullPointerException();
@@ -53,11 +57,19 @@ public class ProxyCheckedInvoker implements I_CheckedInvoker {
 	}
 	
 	public synchronized void setDelegate(I_CheckedInvoker p) {
+		if (locked) {
+			throw new ProxyLockedException(name);
+		}
 		if (log.isDebugEnabled()) {
 			log.debug(super.toString() + " getting invoker " + p + " for ProxyInvoker " + name);
 		}
 		delegate = p;
 	}
+	
+	synchronized void lock() {
+		locked = true;
+	}
+	
 	public I_CheckedInvoker getDelegate() {
 		return delegate;
 	}

@@ -1,10 +1,8 @@
 package org.adligo.i.adi.client.models;
 
-import org.adligo.i.adi.client.light.Memory;
-
 /**
  * class to edit long term memory
- * @see Memory
+ * @see HeavyMemory
  * 
  * @author scott
  *
@@ -12,6 +10,12 @@ import org.adligo.i.adi.client.light.Memory;
 public class MemoryWriterToken {
 	private String key;
 	private Object value;
+	/**
+	 * optional field for the Memory class
+	 * once written a key can only be modified 
+	 * by it's owner  (allows for read only clients)
+	 */
+	private Object owner;
 	
 	public String getKey() {
 		return key;
@@ -24,5 +28,11 @@ public class MemoryWriterToken {
 	}
 	public void setValue(Object value) {
 		this.value = value;
+	}
+	public Object getOwner() {
+		return owner;
+	}
+	public void setOwner(Object owner) {
+		this.owner = owner;
 	}
 }

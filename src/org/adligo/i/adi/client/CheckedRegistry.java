@@ -151,6 +151,18 @@ public class CheckedRegistry {
 		ProxyCheckedInvoker.clearPreInitInvokers();
 	}
 	
+	boolean lockCheckedInvoker(String name) {
+		if (checkedMethods != null) {
+			ProxyCheckedInvoker invoker = (ProxyCheckedInvoker) checkedMethods.get(name);
+			if (invoker != null) {
+				invoker.lock();
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	
 	void debug() {
 		if (checkedMethods != null) {
 			I_Iterator it2 = checkedMethods.getKeysIterator();

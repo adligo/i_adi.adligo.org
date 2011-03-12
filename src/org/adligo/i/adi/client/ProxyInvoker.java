@@ -55,7 +55,11 @@ public class ProxyInvoker implements I_Invoker {
 	 */
 	private String name;
 	private I_Invoker delegate;
-
+	/**
+	 * lock a proxy so that it is no longer mutable
+	 */
+	private boolean locked = false;
+	
 	ProxyInvoker(String name) {
 		if (name == null) {
 			Exception e = new NullPointerException();
@@ -74,11 +78,19 @@ public class ProxyInvoker implements I_Invoker {
 	}
 	
 	public synchronized void setDelegate(I_Invoker p) {
+		if (locked) {
+			throw new ProxyLockedException(name);
+		}
 		if (log.isDebugEnabled()) {
 			log.debug("setting invoker " + p + " for ProxyInvoker " + name + " " + super.toString());
 		}
 		delegate = p;
 	}
+	
+	synchronized void lock() {
+		locked = true;
+	}
+	
 	public I_Invoker getDelegate() {
 		return delegate;
 	}

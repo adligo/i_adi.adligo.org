@@ -6,6 +6,14 @@ import org.adligo.i.adi.client.light.CacheWriter;
 import org.adligo.i.adi.client.light.MemoryReader;
 import org.adligo.i.adi.client.light.MemoryWriter;
 
+/**
+ * the light standard invokers are lightweight
+ * cache and memory implementations which are optimized for 
+ * lightweight clients (GWT and JME) 
+ * by using a single map instead of a map of maps like the heavy ones do
+ * @author scott
+ *
+ */
 public class LightStandardInvokers {
 	private static final ProxyInvoker CACHE_READER = 
 		new ProxyInvoker(InvokerNames.CACHE_READER, CacheReader.INSTANCE);

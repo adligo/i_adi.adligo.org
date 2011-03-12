@@ -256,6 +256,36 @@ public class Registry  {
 		checked.replaceCheckedInvokerDelegates(p);
 	}
 	
+	public static boolean lockInvoker(String name) {
+		if (methods != null) {
+			ProxyInvoker invoker = (ProxyInvoker) methods.get(name);
+			if (invoker != null) {
+				invoker.lock();
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public static boolean lockCheckedInvoker(String name) {
+		return checked.lockCheckedInvoker(name);
+	}
+	
+	public static void lockStandardInvokers() {
+		lockInvoker(InvokerNames.CLOCK);
+		lockInvoker(InvokerNames.CACHE_READER);
+		lockInvoker(InvokerNames.CACHE_WRITER);
+		lockInvoker(InvokerNames.CACHE_REMOVER);
+
+		lockInvoker(InvokerNames.MEMORY_READER);
+		lockInvoker(InvokerNames.MEMORY_WRITER);
+		
+		lockInvoker(InvokerNames.CONFIGURATION_PROVIDER);
+		lockInvoker(InvokerNames.OUT);
+		lockInvoker(InvokerNames.ERR);
+		lockInvoker(InvokerNames.CONSTANTS_FACTORY);
+	}
+	
 	public static void debug() {
 		if (log.isDebugEnabled()) {
 			log.debug("Methods:\n");
