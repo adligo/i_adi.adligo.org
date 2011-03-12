@@ -44,7 +44,13 @@ public class CacheValue {
 		sb.append("/");
 		sb.append(min);
 		sb.append("/");
+		//note @hashCode is tacked on to the end
+		// just in case two different object are written to cache
+		// in the same millisecond (this could happen on 
+		// fast multiprocessor machines!)
 		sb.append(putTime);
+		sb.append("@");
+		sb.append(hashCode());
 		return sb.toString();
 	}
 	
@@ -62,7 +68,9 @@ public class CacheValue {
 	
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
-		sb.append("CacheValue [putTime=");
+		sb.append("CacheValue [fullPath=");
+		sb.append(fullPath);
+		sb.append(",putTime=");
 		sb.append(putTime);
 		sb.append(",value=");
 		sb.append(value);

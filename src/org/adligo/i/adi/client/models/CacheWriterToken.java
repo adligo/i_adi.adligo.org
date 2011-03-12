@@ -1,5 +1,26 @@
 package org.adligo.i.adi.client.models;
 
+/**
+ * a token (input argument like a quarter for a video game)
+ * to write cache
+ * 
+ * NOTE expiration_delta and increment_delta were removed
+ * as they were info for the JCache Api 
+ * (which this api can and does wrap)
+ * 
+ * expiration_delta was removed because it isn't important for
+ * caching client code shoulnd't expect things to stay in the
+ * cache for any particular amout of time.  If the JVM is running
+ * out of memory Cache is the first thing to clean out.
+ * 
+ * increment_delta this is a way to get a counter from memory
+ * but that isn't really scaleable, use some disk api (aka a database)
+ * http://www.mentata.com/ldaphttp/examples/gospel/increment.htm
+ * or oracle, postgres, mssql exc sequence
+ * 
+ * @author scott
+ *
+ */
 public class CacheWriterToken {
 	public static final short SET_ALWAYS = 0;
 	public static final short ADD_ONLY_IF_NOT_PRESENT = 1;
@@ -19,27 +40,7 @@ public class CacheWriterToken {
 	private String name = "";
 	private Object value = new Object();
 	private short setPolicy = SET_ALWAYS;
-	/**
-	 * JCache
-	 * the number of seconds before the item may be
-	 * evicted from the cache (defaults to never)
-	 * 
-	 * GCacheFactory.EXPIRATION_DELTA
-	 * http://code.google.com/appengine/docs/java/memcache/usingjcache.html
-	 */
-	private Integer expiration_delta;
 	
-	/**
-	 * if provided should increment the cache value with name
-	 * @see com.google.appengine.api.memcache.MemcacheService#increment
-	 * 
-	 * MemcacheService
-	 * was added for JCache
-	 * For instance 1 as this value would give
-	 * 
-	 * 1,2,3,4,5 with repeating calls with the same CacheWriterToken
-	 */
-	private Integer increment_delta;
 	
 	
 	public String getName() {
@@ -61,18 +62,18 @@ public class CacheWriterToken {
 		this.setPolicy = setPolicy;
 	}
 	
-	public Integer getExpiration_delta() {
-		return expiration_delta;
-	}
-	public void setExpiration_delta(Integer expirationDelta) {
-		expiration_delta = expirationDelta;
-	}
-
-	public Integer getIncrement_delta() {
-		return increment_delta;
-	}
-	public void setIncrement_delta(Integer incrementDelta) {
-		increment_delta = incrementDelta;
-	}
 	
+	public String toString() {
+		StringBuffer sb = new StringBuffer();
+		sb.append("CacheWriterToken [name=");
+		sb.append(name);
+		sb.append(",value=");
+		sb.append(value);
+		sb.append(",setPolicy=");
+		sb.append(setPolicy);
+		sb.append(",setPolicy=");
+		sb.append(setPolicy);
+		sb.append("]");
+		return sb.toString();
+	}
 }

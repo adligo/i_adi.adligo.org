@@ -11,7 +11,7 @@ import org.adligo.i.util.client.MapFactory;
  * @author scott
  *
  */
-public class Cache {
+public final class Cache {
 
 	/**
 	 * The key should use a pathlike structure
