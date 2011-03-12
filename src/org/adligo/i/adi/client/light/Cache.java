@@ -21,31 +21,8 @@ public final class Cache {
 	 *  <String>,<Object>
 	 *  
 	 */
-	protected static final I_Map items = MapFactory.create();
-	/**
-	 * this contains the times that the cache was edited for each key
-	 * <String>,<Long>
-	 */
-	protected static final I_Map itemsEditTimes = MapFactory.createSync();
-	
-	private Cache() {};
-	
-	/**
-	 * for the CacheTest only do not use (use the Registry api)
-	 * @param key
-	 * @return
-	 */
-	public static Object getItem(String key) {
-		return items.get(key);
-	}
+	static final I_Map items = MapFactory.create();
 
-	/**
-	 * for the CacheTest only do not use (use the Registry api)
-	 * @param key
-	 * @return
-	 */
-	public static Long getTime(String key) {
-		return (Long) itemsEditTimes.get(key);
-	}
+	private Cache() {};
 	
 }

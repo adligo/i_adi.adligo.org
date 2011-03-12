@@ -3,6 +3,7 @@ package org.adligo.i.adi.client.light;
 import org.adligo.i.adi.client.I_Invoker;
 import org.adligo.i.adi.client.InvokerNames;
 import org.adligo.i.adi.client.Registry;
+import org.adligo.i.adi.client.models.CacheValue;
 import org.adligo.i.adi.client.models.CacheWriterToken;
 import org.adligo.i.log.client.Log;
 import org.adligo.i.log.client.LogFactory;
@@ -16,9 +17,9 @@ public class CacheWriter implements I_Invoker {
 		return CLOCK;
 	}
 
-	public static final CacheWriter INSTANCE = new CacheWriter();
+	static final CacheWriter INSTANCE = new CacheWriter();
 	
-	protected CacheWriter() {}
+	private CacheWriter() {}
 	
 	public Object invoke(Object valueObject) {
 		try  {
@@ -32,8 +33,15 @@ public class CacheWriter implements I_Invoker {
 		}
 		
 	}
-
-	protected Boolean invoke(CacheWriterToken token) {
+ 
+	/**
+	 * this is synchronized for JME only
+	 * GWT removes all synchrnization (its single threaded)
+	 * 
+	 * @param token
+	 * @return
+	 */
+	protected synchronized Boolean invoke(CacheWriterToken token) {
 		if (token.getName() != null) {
 			short policy = token.getSetPolicy();
 			switch (policy) {
@@ -64,9 +72,11 @@ public class CacheWriter implements I_Invoker {
 	}
 
 	protected void set(CacheWriterToken token) {
-		Cache.items.put(token.getName(), token.getValue());
 		Long time = (Long) CLOCK.invoke(null);
-		Cache.itemsEditTimes.put(token.getName(), time);
+		CacheValue cv = new CacheValue(token.getName(), 
+				time.longValue(), token.getValue());
+		Cache.items.put(token.getName(), cv);
+		
 		if (log.isDebugEnabled()) {
 			log.debug("cache is now " + token.getName() + " value " +
 					Cache.items.get(token.getName()));
