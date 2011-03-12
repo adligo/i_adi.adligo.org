@@ -9,9 +9,19 @@ public class CacheValue {
 	private long putTime;
 	private Object value;
 	private String fullPath;
+	private ReferenceAddressName refName;
 
-	public CacheValue(String pFullPath, long pPutTime, Object pValue) {
-		fullPath = pFullPath;
+	public CacheValue(String pKey, long pPutTime, Object pValue) {
+		init(new ReferenceAddressName(pKey), pPutTime, pValue);
+	}
+	
+	public CacheValue(ReferenceAddressName pRefName, long pPutTime, Object pValue) {
+		init(pRefName, pPutTime, pValue);
+	}
+	private void init(ReferenceAddressName pRefName, long pPutTime,
+			Object pValue) {
+		refName = pRefName;
+		fullPath = pRefName.getFullPath();
 		putTime = pPutTime;
 		value = pValue;
 	}
@@ -43,17 +53,32 @@ public class CacheValue {
 		StringBuffer sb = new StringBuffer();
 		sb.append("/");
 		sb.append(min);
+		//note @parentFullPath was added 
+		// to remove contention locks in the time index
+		// where many threads would be writing to the same
+		// child Map (java.util.concurrentHashMap) 
+		// designated by the minute 
+		sb.append(refName.getParentFullPath());
 		sb.append("/");
-		//note @hashCode is tacked on to the end
-		// just in case two different object are written to cache
-		// in the same millisecond (this could happen on 
-		// fast multiprocessor machines!)
 		sb.append(putTime);
-		sb.append("@");
-		sb.append(hashCode());
+		sb.append(getLocalWithAtInsteadOfSlash());
 		return sb.toString();
 	}
 	
+	private String getLocalWithAtInsteadOfSlash() {
+		String local = refName.getLocalPath();
+		char [] chars = local.toCharArray();
+		StringBuffer sb = new StringBuffer();
+		for (int i = 0; i < chars.length; i++) {
+			char c = chars[i];
+			if (c == '/') {
+				sb.append('@');
+			} else {
+				sb.append(c);
+			}
+		}
+		return sb.toString();	
+	}
 	/**
 	 * for lookups
 	 */
@@ -62,8 +87,24 @@ public class CacheValue {
 	}
 	
 	public long getTopTimeFromCrunchString(String timeCrunchString) {
-		String withoutSlash = timeCrunchString.substring(1, timeCrunchString.length());
-		return Long.valueOf(withoutSlash).longValue();
+		char [] chars = timeCrunchString.toCharArray();
+		StringBuffer sb = new StringBuffer();
+		boolean firstSlash = false;
+		for (int i = 0; i < chars.length; i++) {
+			char c = chars[i];
+			if (firstSlash) {
+				if (c == '/') {
+					break;
+				} else {
+					sb.append(c);
+				}
+			} else {
+				if (c == '/') {
+					firstSlash = true;
+				}
+			}
+		}
+		return Long.valueOf(sb.toString()).longValue();
 	}
 	
 	public String toString() {

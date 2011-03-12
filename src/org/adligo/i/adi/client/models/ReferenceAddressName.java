@@ -17,17 +17,11 @@ import org.adligo.i.util.client.I_Iterator;
  */
 public class ReferenceAddressName {
 	private String parentFullPath;
-	public String getParentFullPath() {
-		return parentFullPath;
-	}
-
-	public String getLocalPath() {
-		return localPath;
-	}
-
 	private String localPath;
-	private String [] nameParts;
-	private int currentPart = 0;
+	/**
+	 * the full path parentFullPath + / + localPath
+	 */
+	private String fullPath;
 	
 	public ReferenceAddressName(String p) {
 		if (p == null) {
@@ -35,6 +29,7 @@ public class ReferenceAddressName {
 			localPath = "";
 			return;
 		}
+		fullPath = p;
 		
 		char [] chars = p.toCharArray();
 		I_Collection collection = CollectionFactory.create();
@@ -54,7 +49,7 @@ public class ReferenceAddressName {
 			}
 		}
 		collection.add(sb.toString());
-		nameParts = new String[collection.size()];
+		String [] nameParts = new String[collection.size()];
 		I_Iterator it = collection.getIterator();
 		int counter = 0;
 		while (it.hasNext()) {
@@ -78,34 +73,18 @@ public class ReferenceAddressName {
 		}
 	}
 	
-	/**
-	 * @deprecated
-	 * @return
-	 */
-	public int namePartsSize() {
-		return nameParts.length;
+	public String getParentFullPath() {
+		return parentFullPath;
 	}
-	
-	/**
-	 * @deprecated
-	 * @return
-	 */
-	public boolean hasMoreParts() {
-		if (currentPart < nameParts.length) {
-			return true;
-		}
-		return false;
+
+	public String getLocalPath() {
+		return localPath;
 	}
-	
-	/**
-	 * @deprecated
-	 * @return
-	 */
-	public String getNextNamePart() {
-		String toRet = nameParts[currentPart];
-		currentPart++;
-		return toRet;
+
+	public String getFullPath() {
+		return fullPath;
 	}
+
 	
 	
 }
