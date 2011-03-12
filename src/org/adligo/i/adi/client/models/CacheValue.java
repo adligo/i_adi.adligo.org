@@ -69,4 +69,37 @@ public class CacheValue {
 		sb.append("]");
 		return sb.toString();
 	}
+
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((fullPath == null) ? 0 : fullPath.hashCode());
+		result = prime * result + (int) (putTime ^ (putTime >>> 32));
+		result = prime * result + ((value == null) ? 0 : value.hashCode());
+		return result;
+	}
+
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		CacheValue other = (CacheValue) obj;
+		if (fullPath == null) {
+			if (other.fullPath != null)
+				return false;
+		} else if (!fullPath.equals(other.fullPath))
+			return false;
+		if (putTime != other.putTime)
+			return false;
+		if (value == null) {
+			if (other.value != null)
+				return false;
+		} else if (!value.equals(other.value))
+			return false;
+		return true;
+	}
 }

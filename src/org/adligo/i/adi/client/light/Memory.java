@@ -24,7 +24,7 @@ public class Memory {
 	 *  /package/name
 	 *  
 	 *  The system should define a list of items in a constants class
-	 *  <String>,<Object>
+	 *  <String>,<MemoryValue>
 	 *  
 	 */
 	protected static final I_Map items = MapFactory.create();

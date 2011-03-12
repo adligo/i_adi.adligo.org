@@ -35,4 +35,17 @@ public class MemoryWriterToken {
 	public void setOwner(Object owner) {
 		this.owner = owner;
 	}
+	
+	public String toString() {
+		StringBuffer sb = new StringBuffer();
+		sb.append("MemoryWriterToken [key=");
+		sb.append(key);
+		sb.append(",value=");
+		sb.append(value);
+		sb.append(",owner=");
+		sb.append(owner);
+		sb.append("]");
+		
+		return sb.toString();
+	}
 }

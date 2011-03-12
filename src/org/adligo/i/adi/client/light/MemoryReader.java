@@ -1,6 +1,7 @@
 package org.adligo.i.adi.client.light;
 
 import org.adligo.i.adi.client.I_Invoker;
+import org.adligo.i.adi.client.models.MemoryValue;
 
 /**
  * @see Memory
@@ -13,7 +14,11 @@ public class MemoryReader implements I_Invoker {
 	protected MemoryReader() {}
 	
 	public Object invoke(Object key) {
-		return Memory.items.get(key);
+		MemoryValue value = (MemoryValue) Memory.items.get(key);
+		if (value == null) {
+			return null;
+		}
+		return value.getValue();
 	}
 
 }
