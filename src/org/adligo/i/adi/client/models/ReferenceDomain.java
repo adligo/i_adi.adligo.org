@@ -1,11 +1,8 @@
 package org.adligo.i.adi.client.models;
 
-import java.util.Set;
-
 import org.adligo.i.log.client.Log;
 import org.adligo.i.log.client.LogFactory;
 import org.adligo.i.util.client.ArrayIterator;
-import org.adligo.i.util.client.HashCollection;
 import org.adligo.i.util.client.I_Iterator;
 import org.adligo.i.util.client.I_Map;
 import org.adligo.i.util.client.MapFactory;

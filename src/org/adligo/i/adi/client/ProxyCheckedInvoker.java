@@ -4,6 +4,7 @@ import org.adligo.i.log.client.Log;
 import org.adligo.i.log.client.LogFactory;
 import org.adligo.i.util.client.ArrayCollection;
 import org.adligo.i.util.client.I_Iterator;
+import org.adligo.i.util.client.ThrowableHelperFactory;
 
 public class ProxyCheckedInvoker implements I_CheckedInvoker {
 	private static final Log log = LogFactory.getLog(ProxyCheckedInvoker.class);
@@ -87,7 +88,7 @@ public class ProxyCheckedInvoker implements I_CheckedInvoker {
 	static void clearPreInitInvokers() {
 		if (Registry.quite_test_log.isErrorEnabled()) {
 			Exception x = new Exception();
-			x.fillInStackTrace();
+			ThrowableHelperFactory.fillInStackTrace(x);
 			Registry.quite_test_log.error(" calling clearPreInitInvokers ok for tests only" , x);
 		}
 		preInitInvokers.clear();

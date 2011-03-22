@@ -5,6 +5,7 @@ import org.adligo.i.log.client.LogFactory;
 import org.adligo.i.util.client.I_Iterator;
 import org.adligo.i.util.client.I_Map;
 import org.adligo.i.util.client.MapFactory;
+import org.adligo.i.util.client.ThrowableHelperFactory;
 
 
 /**
@@ -80,7 +81,7 @@ public class Registry  {
 	static void uninit() {
 		if (Registry.quite_test_log.isErrorEnabled()) {
 			Exception x = new Exception();
-			x.fillInStackTrace();
+			ThrowableHelperFactory.fillInStackTrace(x);
 			Registry.quite_test_log.warn("uninit called from ", x);
 		}
 		methods = null;

@@ -104,7 +104,7 @@ public class CacheValue {
 				}
 			}
 		}
-		return Long.valueOf(sb.toString()).longValue();
+		return Long.parseLong(sb.toString());
 	}
 	
 	public String toString() {

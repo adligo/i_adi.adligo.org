@@ -5,6 +5,7 @@ import org.adligo.i.log.client.LogFactory;
 import org.adligo.i.util.client.I_Iterator;
 import org.adligo.i.util.client.I_Map;
 import org.adligo.i.util.client.MapFactory;
+import org.adligo.i.util.client.ThrowableHelperFactory;
 
 public class CheckedRegistry {
 	private static final Log log = LogFactory.getLog(CheckedRegistry.class);
@@ -67,7 +68,7 @@ public class CheckedRegistry {
 			log.debug("Returning " + toRet + " for key " + p);
 			if (log.isTraceEnabled()) {
 				Exception trace = new Exception("tracing lookup location");
-				trace.fillInStackTrace();
+				ThrowableHelperFactory.fillInStackTrace(trace);
 				log.trace(trace.getMessage(), trace);
 			}
 		}
