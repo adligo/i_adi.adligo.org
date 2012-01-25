@@ -8,6 +8,19 @@ package org.adligo.i.adi.client;
  * 
  * subclass this if your implementaion needs more detail
  * 
+ * The general rule of thumb in the java api seems to
+ * be to throw a Checked exception (like this class)
+ * when some sort of IO issue occurs.  Lots of developers
+ * consider checked exceptions a failed experiment that
+ * occured in java (as no other languages have them).
+ *    I think they were a success, however I think they are 
+ * often mis used.  For instance several IO type classes 
+ * throw IOExceptions when you close resources, how is a 
+ * programmer suppose to catch and handle that, close it again?
+ * ie
+ * http://docs.oracle.com/javase/1.4.2/docs/api/java/io/OutputStreamWriter.html#close()
+ * so think carfully before you decide to use checked exceptions.
+ * 
  * @author scott
  *
  */
