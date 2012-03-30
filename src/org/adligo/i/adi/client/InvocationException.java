@@ -31,10 +31,16 @@ public class InvocationException extends Exception {
 	 * 
 	 */
 	private static final long serialVersionUID = -8086030960203444535L;
-
+	
 	public InvocationException() {}
 	
 	public InvocationException(String p) {
 		super(p);
+	}
+	
+	public InvocationException(String p, Throwable initCause) {
+		super(p);
+		super.initCause(initCause);
+		super.setStackTrace(initCause.getStackTrace());
 	}
 }
