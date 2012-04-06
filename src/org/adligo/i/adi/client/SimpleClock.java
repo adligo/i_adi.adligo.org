@@ -7,7 +7,8 @@ public class SimpleClock implements I_Invoker {
 	private SimpleClock() {}
 	
 	public Object invoke(Object valueObject) {
-		return new Long(System.currentTimeMillis());
+		long time = System.currentTimeMillis();
+		return new Long(time);
 	}
 
 }
