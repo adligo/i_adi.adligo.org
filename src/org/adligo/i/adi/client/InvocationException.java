@@ -31,6 +31,12 @@ public class InvocationException extends Exception {
 	 * 
 	 */
 	private static final long serialVersionUID = -8086030960203444535L;
+	/**
+	 * note CLDC 1.1 does not have many exception methods,
+	 * so this seems to be the best way to chain exceptions 
+	 * in a way that is compatible with it.
+	 */
+	private Throwable initCause;
 	
 	public InvocationException() {}
 	
@@ -40,7 +46,20 @@ public class InvocationException extends Exception {
 	
 	public InvocationException(String p, Throwable initCause) {
 		super(p);
-		super.initCause(initCause);
-		super.setStackTrace(initCause.getStackTrace());
+		this.initCause = initCause;
 	}
+
+	public void printStackTrace() {
+		if (initCause != null) {
+			initCause.printStackTrace();
+		} else {
+			super.printStackTrace();
+		}
+	}
+
+	public Throwable initCause(Throwable arg0) {
+		initCause = arg0;
+		return this;
+	}
+
 }
