@@ -62,4 +62,8 @@ public class InvocationException extends Exception {
 		return this;
 	}
 
+	public Throwable getCause() {
+		return initCause;
+	}
+
 }
