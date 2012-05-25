@@ -19,4 +19,9 @@ This project is a attempt to come up with a more standard api for wrapping subsy
 It is intended to be used in j2ME environments, J2EE (Servlets, EJB) environments,
 GWT environments and swing environments.
 
+
+Cache is still experimental
+light is for Single threaded (Javascript)
+heavy is for appserver
+
 Write once test everywhere :)
