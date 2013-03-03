@@ -1,4 +1,4 @@
-ADI (Adligo Dynamic Interface)
+AI (Adligo Dynamic Interface)
 
 This is a cross between a Mix in, Service Locater, Proxy, Value Object and a Adapter the main goal being 
 better swapability of software subsystems, with some performance enhancements.  Interfaces have 
@@ -25,3 +25,5 @@ light is for Single threaded (Javascript)
 heavy is for appserver
 
 Write once test everywhere :)
+
+test commit
