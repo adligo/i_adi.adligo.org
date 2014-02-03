@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project basedir="." default="deploy" name="adi">
 	<!-- testing update-all in build project -->
-	<import file="${user.home}/conf/adligo/jse-build.xml"/>
+	<import file="${user.home}/conf/adligo/builds/jse-build.xml"/>
 </project>
