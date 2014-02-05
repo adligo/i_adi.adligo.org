@@ -8,8 +8,6 @@ import org.adligo.i.util.client.I_Map;
 import org.adligo.i.util.client.MapFactory;
 
 /**
- * NOTE this class may currently mave issues issues 
- * (which is why it's not used anywhere yet), and should not be used
  *
  * this allows for faster cache and memory writing by
  * narrowing the scope of the synchronization of writes down.

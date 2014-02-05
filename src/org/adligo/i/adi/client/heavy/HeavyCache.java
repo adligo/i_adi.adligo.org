@@ -1,10 +1,6 @@
 package org.adligo.i.adi.client.heavy;
 
-import org.adligo.i.adi.client.models.CacheValue;
 import org.adligo.i.adi.client.models.ReferenceDomain;
-import org.adligo.i.util.client.HashCollection;
-import org.adligo.i.util.client.I_Map;
-import org.adligo.i.util.client.MapFactory;
 
 /**
  * This is ready for server usage.
