@@ -3,5 +3,5 @@ classes/
 bin/
 classes_e/
 build/
-adi.jad
-adi.jar
+i_adi.jad
+i_adi*.jar
