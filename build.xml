@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project basedir="." default="install_in_ant_home" name="adi">
+<project basedir="." default="install_in_ant_home" name="i_adi">
 	<import file="${user.home}/conf/adligo/builds/jse-build.xml"/>
 </project>
