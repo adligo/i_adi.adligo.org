@@ -1,5 +1,5 @@
-MIDlet-Jar-URL: adi.jar
-MIDlet-Name: adi Midlet Suite
+MIDlet-Jar-URL: i_adi.jar
+MIDlet-Name: i_adi Midlet Suite
 MIDlet-Vendor: Midlet Suite Vendor
 MIDlet-Version: 1.0.0
 MicroEdition-Configuration: CLDC-1.1
