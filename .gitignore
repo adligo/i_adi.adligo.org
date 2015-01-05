@@ -1,7 +1,6 @@
-.eclipseme.tmp/
-classes/
-bin/
-classes_e/
-build/
+/bin/
+/build/
+/classes/
+/classes_e/
 i_adi.jad
 i_adi*.jar
