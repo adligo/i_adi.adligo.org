@@ -1,4 +1,4 @@
-AI (Adligo Dynamic Interface)
+ADI (Adligo Dynamic Interface)
 
 This is a cross between a Mix in, Service Locater, Proxy, Value Object and a Adapter the main goal being 
 better swapability of software subsystems, with some performance enhancements.  Interfaces have 
