@@ -1,5 +1,9 @@
 ADI (Adligo Dynamic Interface)
 
+This project is DEPRICATED, it is being replaced by;
+- https://github.com/adligo/i_ctx.adligo.org
+
+
 This is a cross between a Mix in, Service Locater, Proxy, Value Object and a Adapter the main goal being 
 better swapability of software subsystems, with some performance enhancements.  Interfaces have 
 historically (at least since java has been around) been the way for one part of a system to not 
